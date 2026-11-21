@@ -1,0 +1,1312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>IOF Resonance — Topographic Photonic Dashboard Demo</title>
+<style>
+  :root{
+    --bg:#0a0a1a; --panel:#080818; --panel-2:#03030c; --stage:#02020a;
+    --line:#1a1a3e; --line-2:#26265a;
+    --text:#d7d9ee; --muted:#8b8fa8; --faint:#4a4e6a;
+    --cyan:#00f5d4; --violet:#7b2fff; --violet-soft:#9a6bff; --pink:#f72585;
+    --amber:#ffd60a; --orange:#ff6b35; --green:#00ff88; --red:#ff4444;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#e9ebf3; --panel:#ffffff; --panel-2:#f2f3f9; --stage:#02020a;
+      --line:#d8dbea; --line-2:#bcc1d8;
+      --text:#171a2b; --muted:#5d6178; --faint:#969ab2;
+      --cyan:#009e86; --violet:#6d28e8; --violet-soft:#6d28e8; --pink:#d1105a;
+      --amber:#9a7b00; --orange:#d14e12; --green:#0a8a4d; --red:#cf2222;
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg); color:var(--text); font-family:'Courier New', ui-monospace, monospace; -webkit-font-smoothing:antialiased}
+  button{font:inherit; cursor:pointer}
+  :focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+  .scanlines{position:fixed; inset:0; pointer-events:none; z-index:60;
+    background-image:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px)}
+  @media (prefers-color-scheme: light){ .scanlines{display:none} }
+
+  /* ---------- header ---------- */
+  header.topbar{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+    padding:12px 18px; border-bottom:1px solid var(--line); background:var(--panel); position:relative; z-index:5}
+  .brand .t{font-size:12px; color:var(--cyan); letter-spacing:3px; font-weight:700}
+  .brand .s{font-size:9px; color:var(--faint); margin-top:3px; letter-spacing:1px}
+  .scales{display:flex; gap:8px; flex-wrap:wrap}
+  .hbtn{padding:6px 13px; font-size:9px; letter-spacing:1px; border-radius:4px; border:1px solid var(--line-2);
+    background:var(--panel); color:var(--faint)}
+  .hbtn.on{font-weight:700}
+  .head-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .conn{font-size:10px; color:var(--amber)}
+  .conn.up{color:var(--green); text-shadow:0 0 8px var(--green)}
+  .abtn{padding:6px 15px; font-size:10px; border-radius:4px; background:transparent}
+  .abtn.run{border:1px solid var(--cyan); color:var(--cyan); background:rgba(0,245,212,.06)}
+  .abtn.pause{border:1px solid var(--pink); color:var(--pink); background:rgba(247,37,133,.06)}
+  .abtn.stop{border:1px solid var(--red); color:var(--red); background:rgba(255,0,0,.06); font-weight:700}
+  .abtn.link{border:1px solid var(--line-2); color:var(--muted)}
+
+  /* ---------- layout ---------- */
+  .layout{display:grid; grid-template-columns:264px minmax(0,1fr) 304px; gap:0; align-items:start; max-width:1560px; margin:0 auto}
+  @media (max-width:1080px){ .layout{grid-template-columns:240px minmax(0,1fr)} .col-right{grid-column:1 / -1; flex-direction:row; flex-wrap:wrap} .col-right > section{flex:1 1 300px} }
+  @media (max-width:720px){ .layout{grid-template-columns:minmax(0,1fr)} .col-right{flex-direction:column} }
+  .col{display:flex; flex-direction:column; gap:16px; padding:16px; min-width:0}
+  .col-left{background:var(--panel); border-right:1px solid var(--line)}
+  .col-right{background:var(--panel); border-left:1px solid var(--line)}
+  @media (max-width:720px){ .col-left{border-right:none} .col-right{border-left:none} }
+  .col-center{padding:0; gap:0}
+  section.blk{min-width:0}
+  .blk-h{font-size:9px; color:var(--cyan); letter-spacing:2px; margin-bottom:10px; border-bottom:1px solid var(--line); padding-bottom:4px; font-weight:700}
+  .kv-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:10px; margin-bottom:10px}
+  .kv-grid .k{color:var(--muted); font-size:9px}
+  .rowline{display:flex; justify-content:space-between; font-size:10px; line-height:1.9}
+  .rowline .k{color:var(--muted)}
+  .sparkbox{margin-top:8px; background:var(--panel-2); border-radius:4px; padding:4px; border:1px solid var(--line)}
+  .spark-cap{font-size:8px; color:var(--faint); text-align:right; margin-top:2px}
+  .slider-row{margin-bottom:12px}
+  .slider-row .lab{display:flex; justify-content:space-between; font-size:9px; color:var(--muted); margin-bottom:4px}
+  input[type="range"]{width:100%; height:4px; background:var(--line); appearance:none; -webkit-appearance:none; border-radius:2px; accent-color:var(--cyan)}
+  input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:var(--cyan); cursor:pointer}
+
+  /* proposals */
+  .prop{background:var(--panel-2); border:1px solid var(--line); border-radius:6px; padding:12px; margin-bottom:8px; font-size:10px}
+  .prop .diag{color:var(--pink); margin-bottom:4px; font-weight:700}
+  .prop .rat{color:var(--muted); margin-bottom:8px; line-height:1.45}
+  .prop .foot{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap}
+  .prop .chg{color:var(--cyan)}
+  .mini-btn{padding:4px 12px; border-radius:4px; font-size:9px; background:transparent}
+  .mini-btn.ok{border:1px solid var(--green); color:var(--green); background:rgba(0,255,136,.07)}
+  .mini-btn.no{border:1px solid var(--red); color:var(--red); background:rgba(255,68,68,.07)}
+  .none-note{font-size:10px; color:var(--faint); font-style:italic}
+
+  /* ---------- center ---------- */
+  .pent-wrap{position:relative; background:#04040f; border-bottom:1px solid var(--line)}
+  canvas#pent{display:block; width:100%; height:auto; max-height:62vh; margin:0 auto}
+  .pent-overlay{position:absolute; bottom:16px; left:50%; transform:translateX(-50%); text-align:center; pointer-events:none; width:100%}
+  .pent-overlay .a{font-size:10px; color:var(--pink); letter-spacing:3px; opacity:.75}
+  .pent-overlay .b{font-size:8px; color:#55587a; margin-top:4px; letter-spacing:1px}
+  @media (prefers-color-scheme: light){ .pent-overlay .b{color:#8a8fb0} }
+
+  .topo{padding:16px; background:var(--panel)}
+  .topo-head{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-bottom:12px}
+  .topo-head .blk-h{border:none; margin:0; padding:0; font-size:10px}
+  .topo-controls{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+  .tbtn{padding:6px 11px; font-size:9px; letter-spacing:1px; border-radius:4px; border:1px solid var(--line-2); background:var(--panel-2); color:var(--muted)}
+  .tbtn:hover{border-color:var(--pink); color:var(--pink)}
+  .switch{display:inline-flex; align-items:center; gap:7px; font-size:10px; color:var(--text)}
+  .switch input{width:15px; height:15px; accent-color:var(--cyan)}
+  .stage-frame{position:relative; border-radius:8px; overflow:hidden; background:var(--stage); border:1px solid var(--line); perspective:900px}
+  .stage-tilt{transform:rotateX(52deg) rotateZ(-12deg) scale(1.28); transform-origin:50% 60%}
+  canvas#terrain{display:block; width:100%; height:330px}
+  @media (max-width:720px){ canvas#terrain{height:250px} .stage-tilt{transform:rotateX(46deg) rotateZ(-8deg) scale(1.16)} }
+  .stage-corner{position:absolute; right:10px; top:10px; z-index:3; background:rgba(3,3,12,.85); border:1px solid #26263f; color:#8f93ad; border-radius:6px; padding:5px 9px; font-size:10px}
+  .stage-legend{position:absolute; left:10px; bottom:10px; z-index:3; display:flex; gap:12px; flex-wrap:wrap; background:rgba(3,3,12,.85); border:1px solid #26263f; color:#a6a9c2; border-radius:6px; padding:5px 9px; font-size:10px}
+  canvas#phiChart{display:block; width:100%; height:92px; background:var(--panel-2); border:1px solid var(--line); border-radius:8px; margin-top:12px}
+  .phi-cap{display:flex; justify-content:space-between; font-size:8px; color:var(--faint); letter-spacing:1px; margin-top:5px}
+
+  .ascent-box{margin-top:12px; border:1px solid var(--cyan); border-radius:6px; padding:10px 12px; background:var(--panel-2)}
+  .ascent-box .row{display:flex; justify-content:space-between; gap:8px; font-size:9px; letter-spacing:1px; font-weight:700; color:var(--cyan); flex-wrap:wrap}
+  .bar{height:4px; border-radius:99px; background:var(--line); overflow:hidden; margin-top:8px}
+  .bar i{display:block; height:100%; background:var(--cyan); border-radius:99px; transition:width .2s linear}
+  .ascent-box .nums{display:flex; justify-content:space-between; font-size:9px; color:var(--muted); margin-top:6px; flex-wrap:wrap; gap:6px}
+
+  .decision{margin-top:12px; border:1px solid var(--line); border-radius:6px; padding:11px 12px; background:var(--panel-2); font-size:10px}
+  .decision .diag{display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-weight:700}
+  .badge{font-size:8px; letter-spacing:1px; font-weight:700; padding:3px 7px; border-radius:99px; border:1px solid var(--line-2); color:var(--muted)}
+  .badge.ascent{color:var(--cyan); border-color:var(--cyan)}
+  .badge.shunt{color:var(--red); border-color:var(--red)}
+  .badge.recall{color:var(--violet-soft); border-color:var(--violet-soft)}
+  .decision p{margin:7px 0 0; color:var(--muted); line-height:1.55; font-size:10px}
+  .decision .move{margin-top:8px; color:var(--cyan); font-size:10px}
+  .decision .conf{margin-top:8px; display:flex; align-items:center; gap:10px; font-size:9px; color:var(--faint)}
+  .decision .conf .bar{flex:1; margin-top:0}
+  .statusrow{display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:12px; font-size:9px; color:var(--faint); letter-spacing:1px}
+  .statusrow b{color:var(--muted); font-weight:400}
+  .statusrow .hot{color:var(--cyan)}
+
+  /* gauges */
+  .gauges{display:grid; grid-template-columns:1fr 1fr; gap:10px; justify-items:center}
+  .gauge{text-align:center}
+  .gauge .lab{font-size:8px; color:var(--muted); margin-top:3px; letter-spacing:1px}
+
+  /* memory bank */
+  .mem-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; max-height:264px; overflow:auto}
+  .mem-list li{display:flex; align-items:center; gap:9px; border:1px solid var(--line); background:var(--panel-2); border-radius:5px; padding:7px 9px; font-size:9px}
+  .mem-list .dot{width:7px; height:7px; border-radius:50%; background:var(--faint); flex:none}
+  .mem-list li.peak .dot{background:var(--cyan)}
+  .mem-list li.best{border-color:var(--amber)}
+  .mem-list .grow{flex:1; min-width:0}
+  .mem-list .grow b{display:block; font-size:10px; color:var(--text)}
+  .mem-list .grow span{color:var(--muted); font-size:8px}
+  .mem-list .q{color:var(--cyan); text-align:right}
+  .mem-list button{border:1px solid var(--line-2); background:var(--panel); color:var(--text); border-radius:4px; padding:4px 8px; font-size:8px; letter-spacing:1px}
+  .mem-list button:hover{border-color:var(--cyan); color:var(--cyan)}
+
+  /* log */
+  .log{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; max-height:300px; overflow:auto}
+  .log li{border-left:2px solid var(--line-2); padding-left:9px}
+  .log li.ascent{border-color:var(--cyan)} .log li.shunt{border-color:var(--red)} .log li.recall{border-color:var(--violet)} .log li.system{border-color:var(--faint)}
+  .log .meta{display:flex; gap:8px; font-size:8px; color:var(--faint); flex-wrap:wrap}
+  .log .meta b{color:var(--text); font-size:9px}
+  .log p{margin:3px 0 0; font-size:9px; line-height:1.5; color:var(--muted)}
+
+  /* BLE */
+  .ble-tabs{display:flex; gap:4px; margin-bottom:10px}
+  .ble-tabs span{padding:4px 8px; font-size:8px; border:1px solid var(--line-2); color:var(--faint); border-radius:3px}
+  .ble-tabs span.on{border-color:var(--cyan); color:var(--cyan); background:rgba(0,245,212,.07)}
+  .ble-dev{display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:var(--panel-2); border-radius:4px; margin-bottom:6px}
+  .ble-dev .n{font-size:9px} .ble-dev .t{font-size:8px; color:var(--faint)}
+  .ble-dev .st{font-size:8px; color:var(--faint)} .ble-dev .st.up{color:var(--green)}
+  .scan-btn{width:100%; padding:8px; margin-top:6px; background:rgba(0,245,212,.04); border:1px solid var(--cyan); color:var(--cyan); font-size:9px; border-radius:4px; letter-spacing:1px}
+  .ble-msg{font-size:9px; color:var(--amber); margin-top:8px; line-height:1.5; min-height:13px}
+
+  /* ganglion */
+  .ganglion{display:flex; gap:4px}
+  .ganglion .cell{flex:1; height:42px; background:var(--panel-2); border:1px solid var(--line); border-radius:3px; position:relative; overflow:hidden}
+  .ganglion .fill{position:absolute; bottom:0; left:0; right:0; transition:height .15s}
+  .ganglion .h{position:absolute; bottom:2px; left:50%; transform:translateX(-50%); font-size:7px; color:var(--muted)}
+
+  footer.footbar{padding:8px 20px; background:var(--panel); border-top:1px solid var(--line); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-size:8px; color:var(--faint); letter-spacing:1px}
+  .explainer{max-width:1560px; margin:0 auto; padding:18px 20px 28px; font-family:ui-sans-system, system-ui, sans-serif}
+  .explainer h2{font-size:15px; margin:0 0 8px; color:var(--text)}
+  .explainer p, .explainer li{font-size:13.5px; line-height:1.65; color:var(--muted)}
+  .explainer p{max-width:80ch; margin:0 0 10px}
+  .explainer ol{margin:0; padding-left:20px; max-width:80ch}
+  .explainer b{color:var(--text)}
+  .explainer code{font-family:ui-monospace, Menlo, monospace; font-size:12px; background:var(--panel-2); border:1px solid var(--line); padding:1px 5px; border-radius:5px; color:var(--text)}
+</style>
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="t">◈ IOF RESONANCE v1.0 — INFINITE OPTICAL FABRIC</div>
+    <div class="s" id="brandSub">BIOLOGICAL SCALE — 5D PENTERACT • 32V • 80E • φ=1.6180</div>
+  </div>
+  <div class="scales" id="scaleBtns" role="group" aria-label="Scale"></div>
+  <div class="head-actions">
+    <span class="conn" id="connStatus">○ SIMULATION</span>
+    <button class="abtn link" id="btnWs" type="button">LINK WS</button>
+    <button class="abtn pause" id="btnRun" type="button">■ PAUSE</button>
+    <button class="abtn stop" id="btnStop" type="button">🛑 STOP</button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- ================= LEFT ================= -->
+  <aside class="col col-left">
+    <section class="blk">
+      <div class="blk-h">◈ TRAINING METRICS</div>
+      <div class="kv-grid">
+        <div><span class="k">METABOLIC ENTR</span><br/><span style="color:var(--pink)" id="tmLoss">—</span></div>
+        <div><span class="k">GRAD NORM</span><br/><span style="color:var(--amber)" id="tmGrad">—</span></div>
+        <div><span class="k">LEARNING RATE</span><br/><span style="color:var(--violet-soft)" id="tmLr">9.72e-4</span></div>
+        <div><span class="k">FRACTAL DEPTH</span><br/><span style="color:var(--cyan)" id="tmFrac">—</span></div>
+        <div><span class="k">MOBIUS φ</span><br/><span style="color:var(--orange)" id="tmPhi">—</span></div>
+        <div><span class="k">SYNC</span><br/><span id="tmSync">—</span></div>
+      </div>
+      <div id="sparkLoss"></div>
+      <div class="spark-cap">LOSS HISTORY</div>
+    </section>
+
+    <section class="blk">
+      <div class="blk-h">◈ HARDWARE TELEMETRY</div>
+      <div class="rowline"><span class="k">RESONANCE</span><span style="color:var(--cyan)" id="telRes">—</span></div>
+      <div class="rowline"><span class="k">Q-FACTOR</span><span style="color:var(--violet-soft)" id="telQ">—</span></div>
+      <div class="rowline"><span class="k">THERMAL LOAD</span><span style="color:var(--pink)" id="telThermal">—</span></div>
+      <div class="rowline"><span class="k">Vπ</span><span style="color:var(--amber)">2.41V</span></div>
+      <div class="rowline"><span class="k">BIAS Δ</span><span style="color:var(--cyan)">1.20V</span></div>
+      <div class="sparkbox"><div id="sparkCoh"></div></div>
+    </section>
+
+    <section class="blk">
+      <div class="blk-h">◈ PARAMETERS</div>
+      <div class="slider-row">
+        <div class="lab"><span>COUPLING K</span><span style="color:var(--cyan)" id="valK">0.800</span></div>
+        <input type="range" id="rngK" min="0" max="2" step="0.01" value="0.8" aria-label="Kuramoto coupling K" />
+      </div>
+      <div class="slider-row">
+        <div class="lab"><span>MÖBIUS Φ</span><span style="color:var(--violet-soft)" id="valPhi">—</span></div>
+        <input type="range" id="rngPhi" min="0.5" max="3" step="0.01" value="1.74" aria-label="Möbius phi, in units of pi" />
+      </div>
+      <div class="rowline"><span class="k">LEARNING α (TOPO)</span><span id="valAlpha" style="color:var(--cyan)">0.100</span></div>
+    </section>
+
+    <section class="blk">
+      <div class="blk-h">◈ ASGA PROPOSALS</div>
+      <div id="proposals"><div class="none-note">No pending proposals</div></div>
+    </section>
+  </aside>
+
+  <!-- ================= CENTER ================= -->
+  <div class="col col-center">
+    <div class="pent-wrap">
+      <canvas id="pent" width="600" height="700" aria-label="Rotating 5D penteract projected to 2D with a Möbius twist, with the five jellyfish sync nodes overlaid."></canvas>
+      <div class="pent-overlay">
+        <div class="a" id="pentScaleName">BIOLOGICAL SCALE — 5D PENTERACT</div>
+        <div class="b">32 VERTICES • 80 EDGES • φ = 1.618034</div>
+      </div>
+    </div>
+
+    <section class="topo" aria-label="Topographic optimizer">
+      <div class="topo-head">
+        <div class="blk-h">⬢ TOPOGRAPHIC PHOTONIC COMPUTING // PEAK ASCENT</div>
+        <div class="topo-controls">
+          <label class="switch"><input type="checkbox" id="chkReason" checked /> Reasoning</label>
+          <button class="tbtn" id="btnDestab" type="button">DESTABILIZE</button>
+          <button class="tbtn" id="btnThermal" type="button">THERMAL SPIKE</button>
+        </div>
+      </div>
+      <div class="stage-frame">
+        <div class="stage-tilt">
+          <canvas id="terrain" width="880" height="520" aria-label="Tilted 3D topographic height field built from the jellyfish nodes' real simulation errors. Detected peaks are ringed, the current Möbius phi position is marked, and a dashed arrow shows the ascent path while climbing."></canvas>
+        </div>
+        <div class="stage-corner" id="stageCorner">PEAKS 0</div>
+        <div class="stage-legend"><span><span style="color:#00f5d4">▲</span> PEAKS (<span id="legPeaks">0</span>)</span><span><span style="color:#ffd60a">◉</span> CURRENT</span><span style="color:#00f5d4">→ ASCENT</span></div>
+      </div>
+      <canvas id="phiChart" width="880" height="140" aria-label="Q-factor landscape over normalised Möbius phi, showing the three summits, banked memory states, and the current position."></canvas>
+      <div class="phi-cap"><span>Q-FACTOR LANDSCAPE OVER φ (NORMALISED) — THE MOUNTAIN THE CLIMBER SEES</span><span>TARGET Q ≥ 1.0 × 10⁸</span></div>
+      <div id="ascentSlot"></div>
+      <div class="decision" id="decisionBody">
+        <div class="diag"><span class="badge">IDLE</span><span>reasonWithMemory — no decision yet</span></div>
+        <p>The reasoner wakes when a higher banked peak sits within Δφ ≤ 0.15, when node error projected 15 steps out threatens the power wall, or when coherence (resonance) sags below 0.60 with a remembered state to return to. Lower the coupling K, destabilize, or fire a thermal spike to force the issue.</p>
+      </div>
+      <div class="statusrow">
+        <span>STEP <b class="hot" id="stStep">0</b></span>
+        <span>φ <b class="hot" id="stPhi">0.8700</b></span>
+        <span>Q <b class="hot" id="stQ">—</b></span>
+        <span>MEMORY <b class="hot" id="stMem">0</b></span>
+        <span>🏔 <b class="hot" id="stPeaks">0</b> PEAKS</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= RIGHT ================= -->
+  <aside class="col col-right">
+    <section class="blk">
+      <div class="blk-h">◈ PHOTONIC STATE</div>
+      <div class="gauges" id="gauges"></div>
+    </section>
+
+    <section class="blk">
+      <div class="blk-h">🏔 TOPOLOGICAL MEMORY BANK <span style="color:var(--faint); letter-spacing:0" id="memCount">0 / 10</span></div>
+      <ul class="mem-list" id="memoryList">
+        <li><span class="dot"></span><div class="grow"><b>No states recorded yet</b><span>Locked steps (coherence &gt; 0.85) are banked automatically; terrain peaks are banked as summits.</span></div></li>
+      </ul>
+    </section>
+
+    <section class="blk">
+      <div class="blk-h">◈ DECISION LOG</div>
+      <ul class="log" id="logList"></ul>
+    </section>
+
+    <section class="blk">
+      <div class="blk-h">◈ BLE MESH</div>
+      <div class="ble-tabs"><span class="on">MESH</span><span>MAG</span><span>ECG</span><span>BLE</span></div>
+      <div id="bleList"></div>
+      <button class="scan-btn" id="btnBle" type="button">◉ SCAN BLE MESH</button>
+      <div class="ble-msg" id="bleMsg" role="status"></div>
+    </section>
+
+    <section class="blk">
+      <div class="blk-h">◈ GRAD NORM GANGLION (8 HEADS)</div>
+      <div class="ganglion" id="ganglion"></div>
+    </section>
+  </aside>
+</div>
+
+<footer class="footbar">
+  <div id="footLeft">STEP: 000000 | φ = 1.618034 | 3-6-9 TOPOLOGY</div>
+  <div>MADE WITH MANUS + GREGORY SCOTT DAVIS</div>
+</footer>
+
+<div class="explainer">
+  <h2>How the two codebases meet</h2>
+  <p>The base application above is <b>IOF Resonance v1.0</b> running live: a 5D penteract (32 vertices, 80 edges) rotating through ten planes and projected down with a Möbius twist, while five jellyfish nodes — W, X, Y, Z, V — synchronise under Kuramoto coupling. The topographic module from the March 2026 integration is layered directly onto its real outputs: the jellyfish node positions serve as the mesh (<code>MESH_POS</code>), the terrain height field is built from each node's actual simulation error, and the climber's φ is the simulation's own Möbius phase, normalised to [0, 1]. Nothing in the topographic layer runs on placeholder signals.</p>
+  <ol>
+    <li><b>Topographic ascent first.</b> Terrain peaks are detected on the canvas and recorded through the memory bank's normal <code>record()</code> path — same 10-state capacity and eviction as converged states. If a banked peak within Δφ ≤ 0.15 offers Q at least 20% above current, the reasoner climbs (confidence 0.92) and the simulation's Möbius phase animates to the summit.</li>
+    <li><b>Predictive thermal shunting second.</b> Smoothed per-node errors are projected 15 steps ahead; if any crosses the |error| 0.80 power wall while the fabric is unlocked, learning α shunts to 0.01 (confidence 0.98) before the breach arrives.</li>
+    <li><b>Memory recall as the fallback.</b> When coherence drops below 0.60, the instability pattern in the coherence trace picks the remedy: oscillation → harmonic lock, thermal drift → ensemble average of recent states, otherwise → best banked state, with confidence decaying as <code>exp(−age / 500)</code>.</li>
+  </ol>
+</div>
+
+<script>
+"use strict";
+/* ════════════════════════════════════════════════════════════════
+   IOF Resonance — Infinite Optical Fabric v1.0
+   Gregory Scott Davis + AI Collaboration
+   Base application ported 1:1 (constants, geometry, Kuramoto,
+   simulation engine, components), with the topographic peak-ascent
+   module integrated on the simulation's real outputs.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── CONSTANTS & CONFIGURATION ─────────────────────────────── */
+var PHI = (1 + Math.sqrt(5)) / 2;
+var PHI_NOMINAL = 1.740 * Math.PI;
+var SCALES = {
+  COSMIC:     { name:'COSMIC',     color:'#7b2fff', icon:'◈' },
+  ENGINEERED: { name:'ENGINEERED', color:'#00f5d4', icon:'⬡' },
+  BIOLOGICAL: { name:'BIOLOGICAL', color:'#f72585', icon:'⟁' },
+  COGNITIVE:  { name:'COGNITIVE',  color:'#ffd60a', icon:'⬟' }
+};
+var JELLYFISH_NODES = {
+  W: { id:'W', label:'Resonant', color:'#00f5d4', x:0.20, y:0.22, desc:'Quadrature lock' },
+  X: { id:'X', label:'Passive',  color:'#f72585', x:0.80, y:0.22, desc:'Vπ calibration' },
+  Y: { id:'Y', label:'Active',   color:'#ffd60a', x:0.20, y:0.72, desc:'Drift correction' },
+  Z: { id:'Z', label:'AutoGate', color:'#7b2fff', x:0.80, y:0.72, desc:'Bandwidth envelope' },
+  V: { id:'V', label:'Ganglion', color:'#ff6b35', x:0.50, y:0.50, desc:'Central coherence' }
+};
+var NODE_IDS = Object.keys(JELLYFISH_NODES);
+var BLE_DEVICES = [
+  { id:'MAG',  name:'IOF-MAG-01',  type:'Magnetometer', color:'#00f5d4', node:'W' },
+  { id:'ECG',  name:'IOF-ECG-01',  type:'ECG Monitor',  color:'#f72585', node:'X' },
+  { id:'PPG',  name:'IOF-PPG-01',  type:'Pulse Ox',     color:'#ffd60a', node:'Y' },
+  { id:'TEMP', name:'IOF-TEMP-01', type:'Temperature',  color:'#7b2fff', node:'Z' },
+  { id:'IMU',  name:'IOF-IMU-01',  type:'Motion',       color:'#ff6b35', node:'V' }
+];
+
+/* ── UTILITIES (from source) ───────────────────────────────── */
+function gauss(mean, sigma){
+  var u1 = Math.max(1e-10, Math.random());
+  var u2 = Math.random();
+  var z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  return mean + z * sigma;
+}
+function clamp(val, min, max){ return Math.max(min, Math.min(max, val)); }
+
+/* ── 5D PENTERACT GEOMETRY ENGINE (from source) ────────────── */
+function buildPenteractVertices(){
+  var verts = [];
+  for (var i = 0; i < 32; i++){
+    verts.push([ (i&1)?1:-1, (i&2)?1:-1, (i&4)?1:-1, (i&8)?1:-1, (i&16)?1:-1 ]);
+  }
+  return verts;
+}
+function buildPenteractEdges(verts){
+  var edges = [];
+  for (var i = 0; i < verts.length; i++){
+    for (var j = i + 1; j < verts.length; j++){
+      var diff = 0;
+      for (var d = 0; d < 5; d++){ if (verts[i][d] !== verts[j][d]) diff++; }
+      if (diff === 1) edges.push([i, j]);
+    }
+  }
+  return edges;
+}
+function rotate5D(v, angles){
+  var x = v.slice();
+  var planes = [[0,1],[0,2],[0,3],[0,4],[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]];
+  planes.forEach(function(plane, idx){
+    var a = plane[0], b = plane[1];
+    var theta = angles[idx] || 0;
+    var ca = Math.cos(theta), sa = Math.sin(theta);
+    var na = ca * x[a] - sa * x[b];
+    var nb = sa * x[a] + ca * x[b];
+    x[a] = na; x[b] = nb;
+  });
+  return x;
+}
+function project5Dto2D(v5, params){
+  var w4 = 2.5, s4 = w4 / (w4 - v5[4]);
+  var v4 = [v5[0]*s4, v5[1]*s4, v5[2]*s4, v5[3]*s4];
+  var w3 = 2.5, s3 = w3 / (w3 - v4[3]);
+  var v3 = [v4[0]*s3, v4[1]*s3, v4[2]*s3];
+  var w2 = 2.5, s2 = w2 / (w2 - v3[2]);
+  var x2 = v3[0]*s2, y2 = v3[1]*s2;
+  var mobius = params.mobiusPhase || 0;
+  var theta = Math.atan2(y2, x2);
+  var radius = Math.sqrt(x2*x2 + y2*y2);
+  var twisted = theta + mobius * 0.3 * Math.sin(radius * PHI);
+  return [ radius * Math.cos(twisted), radius * Math.sin(twisted) ];
+}
+
+/* ── KURAMOTO SYNCHRONIZATION (from source) ────────────────── */
+function kuramotoStep(phases, coupling, errors){
+  var ids = Object.keys(phases);
+  var next = Object.assign({}, phases);
+  var neighbors = { W:['X','Y','V'], X:['W','Z','V'], Y:['W','Z','V'], Z:['X','Y','V'], V:['W','X','Y','Z'] };
+  ids.forEach(function(id){
+    var nb = neighbors[id] || [];
+    var omega = 0.08 + 0.35 * Math.abs(errors[id] || 0);
+    var sum = nb.reduce(function(acc, nid){ return acc + Math.sin(phases[nid] - phases[id]); }, 0);
+    next[id] = (phases[id] + omega + (coupling / Math.max(1, nb.length)) * sum) % (2 * Math.PI);
+  });
+  return next;
+}
+function calculateCoherence(phases){
+  var vals = Object.values(phases);
+  var re = vals.reduce(function(s,p){ return s + Math.cos(p); }, 0) / vals.length;
+  var im = vals.reduce(function(s,p){ return s + Math.sin(p); }, 0) / vals.length;
+  return Math.sqrt(re*re + im*im);
+}
+
+/* ── SIMULATION ENGINE (from source, + integration hooks) ────
+   createSimulation keeps its exact outputs (tick, loss, coherence,
+   phases, gradNorms, errors, locked, mobiusPhi). Added: a coupling
+   setter for the K slider, a phase-scatter injector for
+   Destabilize, an error-boost for Thermal spike, and a φ override
+   so the topographic reasoner can steer the Möbius phase.        */
+function createSimulation(){
+  var tick = 0;
+  var loss = 0.05;
+  var phases = { W:0, X:Math.PI/2, Y:Math.PI, Z:3*Math.PI/2, V:Math.PI/4 };
+  var gradNorms = Array(8).fill(1.0).map(function(){ return gauss(1.0, 0.2); });
+  var coupling = 0.8;
+  var errorBoost = 1;
+  var phiOverride = null; /* radians; null = nominal wobble */
+  return {
+    step: function(){
+      tick++;
+      loss = Math.max(0.025, loss * 0.9995 + gauss(0, 0.001));
+      var errors = {
+        W: gauss(0, 0.04) * errorBoost,
+        X: gauss(0, 0.03) * errorBoost,
+        Y: gauss(0, 0.05) * errorBoost,
+        Z: gauss(0, 0.02) * errorBoost,
+        V: gauss(0, 0.03) * errorBoost
+      };
+      phases = kuramotoStep(phases, coupling, errors);
+      var coherence = calculateCoherence(phases);
+      gradNorms = gradNorms.map(function(g){ return Math.max(0.05, gauss(g * 0.99, 0.1)); });
+      return {
+        tick: tick,
+        timestamp: Date.now(),
+        loss: loss,
+        coherence: coherence,
+        phases: phases,
+        gradNorms: gradNorms,
+        errors: errors,
+        locked: coherence > 0.85,
+        mobiusPhi: (phiOverride !== null) ? phiOverride : (PHI_NOMINAL + 0.1 * Math.sin(tick * 0.05))
+      };
+    },
+    setCoupling: function(k){ coupling = k; },
+    getCoupling: function(){ return coupling; },
+    setErrorBoost: function(b){ errorBoost = b; },
+    setPhiOverride: function(rad){ phiOverride = rad; },
+    scatterPhases: function(amount){
+      NODE_IDS.forEach(function(id){ phases[id] = (phases[id] + gauss(0, amount)) % (2 * Math.PI); });
+    }
+  };
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TOPOGRAPHIC MODULE (from the March 2026 integration)
+   MESH_POS is JELLYFISH_NODES, exactly as the pasted code assumed.
+   ════════════════════════════════════════════════════════════════ */
+var MESH_POS = JELLYFISH_NODES;
+
+/* The Q landscape over normalised φ. Summits sit at the nominal
+   lock φ 0.8700 (1.740π — the fabric's home), 0.4200 and 0.1300. */
+var SUMMITS = [
+  { phi:0.1300, q:0.74e8, width:0.055 },
+  { phi:0.4200, q:0.93e8, width:0.070 },
+  { phi:0.8700, q:1.07e8, width:0.052 }
+];
+function landscapeQ(phi){
+  var q = 0.30e8;
+  for (var i = 0; i < SUMMITS.length; i++){
+    var s = SUMMITS[i], d = phi - s.phi;
+    q += (s.q - 0.30e8) * Math.exp(-(d*d) / (2*s.width*s.width));
+  }
+  q += 0.012e8 * Math.sin(phi*21.0) * Math.sin(phi*7.3 + 1.1);
+  return q;
+}
+function phiNorm(mobiusPhiRad){
+  var n = (mobiusPhiRad / (2 * Math.PI)) % 1;
+  return n < 0 ? n + 1 : n;
+}
+
+/* ── TopologicalMemoryBank — the emailed class, completed ──── */
+function TopologicalMemoryBank(maxEntries, decayRate){
+  this.states = [];
+  this.maxEntries = maxEntries || 10;      /* default from the source */
+  this.decayRate = (decayRate == null ? 0.01 : decayRate);
+  this.resonancePatterns = new Map();
+  this.peakCache = new Map();              /* cache of detected peaks in phi space */
+}
+TopologicalMemoryBank.prototype.record = function(arch, photonic, step, isPeak){
+  var entry = { phi: arch.mobius_phi, q: photonic.qFactor, step: step, isPeak: !!isPeak,
+                resonance: photonic.resonance, coherence: photonic.coherence };
+  var radius = entry.isPeak ? 0.035 : 0.006;
+  for (var i = 0; i < this.states.length; i++){
+    if (Math.abs(this.states[i].phi - entry.phi) < radius && this.states[i].isPeak === entry.isPeak){
+      if (entry.q > this.states[i].q) this.states[i] = entry;
+      return entry;
+    }
+  }
+  /* peaks churn as the terrain animates — cap them so converged
+     states keep their share of the bank's capacity */
+  if (entry.isPeak){
+    var peaks = this.states.filter(function(s){ return s.isPeak; });
+    if (peaks.length >= 6){
+      var worstPeak = peaks.reduce(function(a,b){ return b.q < a.q ? b : a; });
+      if (entry.q <= worstPeak.q) return entry;
+      this.states.splice(this.states.indexOf(worstPeak), 1);
+    }
+  }
+  this.states.push(entry);
+  if (entry.isPeak) this.peakCache.set(entry.phi.toFixed(3), entry);
+  while (this.states.length > this.maxEntries){
+    var worst = -1, worstQ = Infinity;
+    for (var j = 0; j < this.states.length; j++){
+      if (!this.states[j].isPeak && this.states[j].q < worstQ){ worstQ = this.states[j].q; worst = j; }
+    }
+    if (worst === -1) worst = 0;
+    this.states.splice(worst, 1);
+  }
+  return entry;
+};
+TopologicalMemoryBank.prototype.getBestState = function(){
+  if (!this.states.length) return null;
+  return this.states.reduce(function(a,b){ return b.q > a.q ? b : a; });
+};
+TopologicalMemoryBank.prototype.getRecentStates = function(n){
+  return this.states.slice().sort(function(a,b){ return b.step - a.step; }).slice(0, n || 3);
+};
+TopologicalMemoryBank.prototype.findNearbyPeak = function(currentPhi, threshold){
+  threshold = (threshold == null ? 0.1 : threshold);
+  var candidates = this.states.filter(function(s){ return Math.abs(s.phi - currentPhi) < threshold; });
+  if (!candidates.length) return null;
+  return candidates.reduce(function(a,b){ return b.q > a.q ? b : a; });
+};
+TopologicalMemoryBank.prototype.findGlobalPeak = function(){
+  if (!this.states.length) return null;
+  return this.states.reduce(function(a,b){ return b.q > a.q ? b : a; });
+};
+TopologicalMemoryBank.prototype.calculateGradient = function(currentPhi){
+  var peak = this.findNearbyPeak(currentPhi, 0.3);
+  if (!peak) return 0;
+  return peak.phi - currentPhi;
+};
+
+/* ── Helpers the pasted module referenced but never included ── */
+function getProjectedState(nodes, stepsAhead){
+  var out = {};
+  NODE_IDS.forEach(function(id){
+    var n = nodes[id] || { localError:0, prevErr:0 };
+    var velocity = n.localError - (n.prevErr || 0);
+    out[id] = { error: n.localError + velocity * stepsAhead, velocity: velocity };
+  });
+  return out;
+}
+function detectInstabilityPattern(history){
+  if (!history || history.length < 6) return 'default';
+  var vals = history.slice(-10).map(function(h){ return h.resonance; });
+  var mean = vals.reduce(function(a,b){ return a + b; }, 0) / vals.length;
+  var crossings = 0;
+  for (var i = 1; i < vals.length; i++){ if ((vals[i-1]-mean) * (vals[i]-mean) < 0) crossings++; }
+  if (crossings >= 3) return 'oscillating';
+  var drift = vals[vals.length-1] - vals[0], falling = 0;
+  for (var j = 1; j < vals.length; j++){ if (vals[j] < vals[j-1]) falling++; }
+  if (drift < -0.08 && falling >= vals.length - 3) return 'thermal_drift';
+  return 'default';
+}
+function findHarmonicLock(states, currentPhi){
+  var ratios = [2, 0.5, 1.5, 2/3, 3, 1/3], best = null;
+  states.forEach(function(s){
+    ratios.forEach(function(r){
+      var target = currentPhi * r;
+      if (target > 1) target -= 1;
+      if (Math.abs(s.phi - target) < 0.03 && (!best || s.q > best.q)) best = s;
+    });
+  });
+  return best;
+}
+
+/* ── reasonWithMemory — original priority order and diagnoses:
+      topographic ascent → predictive thermal shunting → recall ── */
+function reasonWithMemory(arch, photonic, history, step, topologicalMemory, nodes){
+  var bestState = topologicalMemory.getBestState();
+  var recentStates = topologicalMemory.getRecentStates(3);
+  var resonance = photonic.resonance;
+  var qFactor = photonic.qFactor;
+
+  /* ===== TOPOGRAPHIC ASCENT ===== */
+  var nearbyPeak = topologicalMemory.findNearbyPeak(arch.mobius_phi, 0.15);
+  if (nearbyPeak && nearbyPeak.q > qFactor * 1.2 && Math.abs(nearbyPeak.phi - arch.mobius_phi) > 0.004){
+    return {
+      diag: "topological_ascent", conf: 0.92,
+      rationale: "🏔️ Detected higher elevation resonance summit at φ=" + nearbyPeak.phi.toFixed(4) + " (Q=" + nearbyPeak.q.toExponential(2) + "). Proposing ascent to maximize mode confinement.",
+      param: "mobius_phi", cur: arch.mobius_phi, nxt: nearbyPeak.phi,
+      gradient: nearbyPeak.phi - arch.mobius_phi, peakHeight: nearbyPeak.q / 1e8, action: "ascent"
+    };
+  }
+
+  /* ===== PREDICTIVE THERMAL SHUNTING ===== */
+  var projectedNodes = getProjectedState(nodes, 15);
+  var futureThermalRisk = Object.keys(projectedNodes).some(function(id){ return Math.abs(projectedNodes[id].error) > 0.8; });
+  if (futureThermalRisk && !photonic.isConverged){
+    return {
+      diag: "predictive_thermal_shunting", conf: 0.98,
+      rationale: "🔥 Predictive Ghost detected imminent Power Wall breach in TFLN lattice. Shunting learning alpha to 0.01 to prevent mode collapse.",
+      param: "alpha", cur: arch.alpha || 0.1, nxt: 0.01, urgent: true, thermalRisk: true, action: "shunt"
+    };
+  }
+
+  /* ===== STANDARD MEMORY RECALL ===== */
+  if (resonance < 0.6 && bestState){
+    var instabilityTrend = detectInstabilityPattern(history);
+    var result = { param: "mobius_phi", cur: arch.mobius_phi, action: "recall" };
+    if (instabilityTrend === 'oscillating'){
+      var harmonicState = findHarmonicLock(topologicalMemory.states, arch.mobius_phi);
+      if (harmonicState){
+        result.diag = "harmonic_locking"; result.conf = 0.95;
+        result.rationale = "🎵 Detected oscillatory instability. Locking to harmonic of previous stable state (φ=" + harmonicState.phi.toFixed(4) + ").";
+        result.nxt = harmonicState.phi;
+      }
+    }
+    if (!result.diag && instabilityTrend === 'thermal_drift' && recentStates.length){
+      var avgPhi = recentStates.reduce(function(sum, s){ return sum + s.phi; }, 0) / recentStates.length;
+      result.diag = "ensemble_recall"; result.conf = 0.85;
+      result.rationale = "🌡️ Thermal drift detected. Recalling ensemble average from " + recentStates.length + " previous stable states.";
+      result.nxt = avgPhi;
+    }
+    if (!result.diag){
+      result.diag = "memory_recall_alignment"; result.conf = 0.9;
+      result.rationale = "📡 Current mode unstable. Recalling optimized state from step " + bestState.step + " (Q=" + bestState.q.toExponential(1) + "). Re-aligning to known topological peak.";
+      result.nxt = bestState.phi;
+    }
+    var stepsSinceBest = step - bestState.step;
+    if (stepsSinceBest > 100){
+      result.conf *= Math.exp(-stepsSinceBest / 500);
+      result.rationale += " (confidence adjusted: old memory, " + stepsSinceBest + " steps old)";
+    }
+    if (Math.abs(result.nxt - arch.mobius_phi) < 0.002) return null;
+    return result;
+  }
+  return null;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   APPLICATION STATE — the IOFResonance component, as plain state
+   ════════════════════════════════════════════════════════════════ */
+var sim = createSimulation();
+var memoryBank = new TopologicalMemoryBank(10, 0.01);
+var S = {
+  scale: SCALES.BIOLOGICAL,
+  connected: false,
+  running: true,
+  emergencyStop: false,
+  data: null,
+  history: { loss: [], coherence: [], phases: { W:[], X:[], Y:[], Z:[], V:[] } },
+  resHistory: [],               /* {resonance} trace for the instability detector */
+  proposals: [],
+  blePaired: {},                /* BLE device id -> true */
+  magnetometer: null,
+  /* topographic layer */
+  arch: { mobius_phi: 0.87, dim: 3, alpha: 0.1 },
+  nodes: {},                    /* id -> {localError, prevErr, amplitude} — sim-fed */
+  smErr: {}, smPrev: {},        /* smoothed error series for projection */
+  climb: null,                  /* {from,to,peakHeight,startTick,durTicks} */
+  lastDecision: null,
+  alphaHoldUntil: -1,
+  cooldownUntil: -1,
+  thermalUntil: -1,
+  peaks: [],
+  reasoning: true
+};
+NODE_IDS.forEach(function(id){ S.nodes[id] = { localError:0, prevErr:0, amplitude:0.5 }; S.smErr[id] = 0; S.smPrev[id] = 0; });
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function fmtQ(q){ return (q/1e8).toFixed(3) + " ×10⁸"; }
+var darkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+/* derived photonic view of the sim, in the pasted module's shape */
+function photonicOf(data){
+  var phi = S.arch.mobius_phi;
+  var q = landscapeQ(phi) * (0.45 + 0.55 * data.coherence);
+  return {
+    coherence: data.coherence,
+    resonance: data.coherence,
+    qFactor: q,
+    dissipation: 5.0 * (1.0 - Math.tanh(q / 1e7)),
+    isConverged: data.locked
+  };
+}
+
+/* ── GaugeRing / Sparkline (components from source, as SVG) ── */
+function gaugeSVG(value, min, max, color, size){
+  var pct = clamp((value - min) / (max - min), 0, 1);
+  var r = size / 2 - 6, circ = 2 * Math.PI * r;
+  var dash = pct * circ * 0.75, gap = circ - dash;
+  return '<svg width="' + size + '" height="' + size + '">' +
+    '<circle cx="' + size/2 + '" cy="' + size/2 + '" r="' + r + '" fill="none" stroke="' + (darkMode ? '#1a1a2e' : '#e2e4f0') + '" stroke-width="6"/>' +
+    '<circle cx="' + size/2 + '" cy="' + size/2 + '" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="6" ' +
+      'stroke-dasharray="' + dash.toFixed(1) + ' ' + gap.toFixed(1) + '" stroke-linecap="round" ' +
+      'style="transform-origin:' + size/2 + 'px ' + size/2 + 'px; transform:rotate(-225deg); filter:drop-shadow(0 0 4px ' + color + '); transition:stroke-dasharray .3s"/>' +
+    '<text x="' + size/2 + '" y="' + (size/2 + 4) + '" text-anchor="middle" fill="' + color + '" style="font-size:11px; font-family:monospace; font-weight:700">' + value.toFixed(1) + '</text></svg>';
+}
+function sparklineSVG(data, color, height, width){
+  height = height || 40; width = width || 120;
+  if (!data || data.length < 2) return '<svg width="' + width + '" height="' + height + '"></svg>';
+  var min = Math.min.apply(null, data), max = Math.max.apply(null, data), range = (max - min) || 0.001;
+  var pts = data.map(function(v, i){
+    return ((i / (data.length - 1)) * width).toFixed(1) + ',' + (height - 2 - ((v - min) / range) * (height - 4)).toFixed(1);
+  }).join(' ');
+  return '<svg width="' + width + '" height="' + height + '" style="max-width:100%">' +
+    '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="1.5" style="filter:drop-shadow(0 0 2px ' + color + ')"/></svg>';
+}
+
+/* ── PenteractCanvas (from source) ─────────────────────────── */
+var PENT_VERTS = buildPenteractVertices();
+var PENT_EDGES = buildPenteractEdges(PENT_VERTS);
+function drawPenteract(data){
+  var canvas = $("pent"); if (!canvas || !data) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height, cx = W / 2, cy = H / 2, scale = 280;
+  ctx.fillStyle = '#0a0a1a'; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(0,245,212,0.03)'; ctx.lineWidth = 1;
+  for (var gx = 0; gx < W; gx += 40){ ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke(); }
+  for (var gy = 0; gy < H; gy += 40){ ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke(); }
+  var t = data.tick * 0.008;
+  var angles = [ t*0.1, t*0.15*PHI, t*0.08, t*0.12, t*0.06, t*0.09*PHI, t*0.11, t*0.07, t*0.13, t*0.05*PHI ];
+  var projected = PENT_VERTS.map(function(v){
+    return project5Dto2D(rotate5D(v, angles), { mobiusPhase: data.mobiusPhi });
+  });
+  var mag = S.magnetometer;
+  var magStrength = mag ? Math.sqrt(mag.x*mag.x + mag.y*mag.y + mag.z*mag.z) : 0;
+  var magN = clamp(magStrength / 100, 0, 1);
+  PENT_EDGES.forEach(function(e){
+    var p1 = projected[e[0]], p2 = projected[e[1]];
+    var dist = Math.sqrt(Math.pow(p1[0]-p2[0],2) + Math.pow(p1[1]-p2[1],2));
+    var hue = (data.tick * 2 + dist * 100) % 360;
+    ctx.beginPath();
+    ctx.moveTo(cx + p1[0]*scale, cy + p1[1]*scale);
+    ctx.lineTo(cx + p2[0]*scale, cy + p2[1]*scale);
+    ctx.strokeStyle = 'hsla(' + hue + ', ' + (80 + magN*20) + '%, ' + (50 + data.coherence*30) + '%, ' + (0.3 + data.coherence*0.4) + ')';
+    ctx.lineWidth = 0.5 + data.coherence;
+    ctx.stroke();
+  });
+  projected.forEach(function(p, idx){
+    var r = 2 + data.gradNorms[idx % 8] * 2;
+    var hue = (idx * 11 + data.tick) % 360;
+    ctx.beginPath();
+    ctx.arc(cx + p[0]*scale, cy + p[1]*scale, r, 0, Math.PI * 2);
+    ctx.fillStyle = 'hsla(' + hue + ', 100%, 60%, ' + (0.6 + data.coherence*0.4) + ')';
+    ctx.fill();
+  });
+  Object.keys(JELLYFISH_NODES).forEach(function(id){
+    var node = JELLYFISH_NODES[id];
+    var phase = data.phases[id] || 0;
+    var amp = 0.5 + 0.5 * Math.sin(phase);
+    var px = cx + (node.x - 0.5) * scale * 1.5;
+    var py = cy + (node.y - 0.5) * scale * 1.2;
+    ctx.beginPath();
+    ctx.arc(px, py, 6 + amp * 4, 0, Math.PI * 2);
+    ctx.fillStyle = node.color; ctx.globalAlpha = 0.3 + amp * 0.4; ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = node.color; ctx.font = '10px monospace';
+    ctx.fillText(id, px - 4, py - 10);
+  });
+}
+
+/* ── Topography canvas — AcousticTopographyWithAscent ──────── */
+var offC = document.createElement('canvas'); offC.width = 200; offC.height = 118;
+var offX = offC.getContext('2d');
+var offImg = offX.createImageData(200, 118);
+function heightAt(nx, ny){
+  var h = 0, wsum = 0;
+  for (var i = 0; i < NODE_IDS.length; i++){
+    var id = NODE_IDS[i], pos = MESH_POS[id], n = S.nodes[id];
+    var dx = nx - pos.x, dy = ny - pos.y;
+    var dist = Math.sqrt(dx*dx + dy*dy);
+    var infl = Math.exp(-dist * 8) * (n.amplitude || 0.5);
+    h += Math.abs(n.localError) * infl * 200;
+    wsum += infl;
+  }
+  var noise = Math.sin(nx * 30) * Math.sin(ny * 22) * 10;
+  return (h / (wsum || 1)) + noise + (landscapeQ(nx) / 1e8) * 22;
+}
+function detectPeaks(){
+  var peaks = [], st = 0.045;
+  for (var x = st; x < 1 - st; x += st){
+    for (var y = st; y < 1 - st; y += st){
+      var h0 = heightAt(x, y);
+      if (h0 > 34 && h0 > heightAt(x+st, y) && h0 > heightAt(x-st, y) && h0 > heightAt(x, y+st) && h0 > heightAt(x, y-st)){
+        peaks.push({ x: x, y: y, height: h0 });
+      }
+    }
+  }
+  peaks.sort(function(a,b){ return b.height - a.height; });
+  return peaks.slice(0, 7);
+}
+function hsl(h, s, l){
+  s /= 100; l /= 100;
+  var k = function(n){ return (n + h / 30) % 12; };
+  var a = s * Math.min(l, 1 - l);
+  var f = function(n){ return l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))); };
+  return [Math.round(f(0)*255), Math.round(f(8)*255), Math.round(f(4)*255)];
+}
+function drawTerrain(){
+  var canvas = $("terrain"); if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height, ow = offC.width, oh = offC.height, data = offImg.data;
+  for (var y = 0; y < oh; y++){
+    for (var x = 0; x < ow; x++){
+      var hgt = heightAt(x / ow, y / oh);
+      var idx = (y * ow + x) * 4;
+      var f = clamp(hgt / 120, 0, 1);
+      var c = hsl(185 + f * 95, 82, 15 + f * 42);
+      data[idx] = c[0]; data[idx+1] = c[1]; data[idx+2] = c[2]; data[idx+3] = 255;
+    }
+  }
+  offX.putImageData(offImg, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#02020a'; ctx.fillRect(0, 0, W, H);
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(offC, 0, 0, W, H);
+  ctx.strokeStyle = 'rgba(123,47,255,0.13)'; ctx.lineWidth = 1;
+  for (var gy = 0; gy < H; gy += 44){ ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke(); }
+  for (var gx = 0; gx < W; gx += 44){ ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke(); }
+  S.peaks.forEach(function(p){
+    var px = p.x * W, py = p.y * H;
+    ctx.beginPath(); ctx.arc(px, py, 9, 0, Math.PI * 2);
+    ctx.strokeStyle = '#00f5d4'; ctx.lineWidth = 1.6; ctx.stroke();
+    ctx.fillStyle = '#00f5d4'; ctx.font = '600 12px monospace';
+    ctx.fillText(Math.round(p.height) + '', px + 13, py - 9);
+  });
+  var curX = S.arch.mobius_phi * W, curY = H * 0.52;
+  if (S.climb){
+    var tx = S.climb.to * W, ty = H * 0.30;
+    ctx.beginPath(); ctx.moveTo(curX, curY); ctx.lineTo(tx, ty);
+    ctx.strokeStyle = '#00f5d4'; ctx.lineWidth = 2; ctx.setLineDash([9, 6]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(tx - 9, ty - 7); ctx.lineTo(tx, ty); ctx.lineTo(tx - 9, ty + 7);
+    ctx.strokeStyle = '#00f5d4'; ctx.lineWidth = 2; ctx.stroke();
+    var ab = $("ascentBar");
+    if (ab && S.climb.from !== S.climb.to){
+      ab.style.width = clamp(Math.abs(S.arch.mobius_phi - S.climb.from) / Math.abs(S.climb.to - S.climb.from) * 100, 0, 100) + '%';
+    }
+  }
+  ctx.beginPath(); ctx.arc(curX, curY, 13, 0, Math.PI * 2);
+  ctx.strokeStyle = '#ffd60a'; ctx.lineWidth = 3; ctx.stroke();
+  ctx.beginPath(); ctx.arc(curX, curY, 3.5, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffd60a'; ctx.fill();
+}
+function drawPhiChart(){
+  var canvas = $("phiChart"); if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  var padL = 8, padR = 8, padT = 12, padB = 16, iw = W - padL - padR, ih = H - padT - padB;
+  var qMin = 0.25e8, qMax = 1.12e8;
+  function X(phi){ return padL + phi * iw; }
+  function Y(q){ return padT + ih - ((q - qMin) / (qMax - qMin)) * ih; }
+  ctx.strokeStyle = darkMode ? '#26263f' : '#d8dbea'; ctx.lineWidth = 1;
+  [0.4e8, 0.6e8, 0.8e8, 1.0e8].forEach(function(q){
+    ctx.beginPath(); ctx.moveTo(padL, Y(q)); ctx.lineTo(W - padR, Y(q)); ctx.stroke();
+    ctx.fillStyle = darkMode ? '#666a85' : '#969ab2'; ctx.font = '10px monospace';
+    ctx.fillText((q / 1e8).toFixed(1), padL + 2, Y(q) - 3);
+  });
+  ctx.beginPath();
+  for (var i = 0; i <= 160; i++){
+    var phi = i / 160, q = landscapeQ(phi);
+    if (i === 0) ctx.moveTo(X(phi), Y(q)); else ctx.lineTo(X(phi), Y(q));
+  }
+  ctx.strokeStyle = '#00f5d4'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.lineTo(X(1), padT + ih); ctx.lineTo(X(0), padT + ih); ctx.closePath();
+  ctx.fillStyle = 'rgba(0,245,212,0.10)'; ctx.fill();
+  SUMMITS.forEach(function(s){
+    ctx.fillStyle = '#7b2fff';
+    ctx.beginPath(); ctx.arc(X(s.phi), Y(s.q), 4, 0, Math.PI * 2); ctx.fill();
+  });
+  memoryBank.states.forEach(function(s){
+    ctx.fillStyle = s.isPeak ? '#00f5d4' : (darkMode ? '#565b78' : '#a7abc0');
+    ctx.beginPath(); ctx.arc(X(s.phi), Y(s.q), s.isPeak ? 3.4 : 2.4, 0, Math.PI * 2); ctx.fill();
+  });
+  if (S.climb){
+    ctx.strokeStyle = '#ffd60a'; ctx.lineWidth = 1.6; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(X(S.climb.to), padT); ctx.lineTo(X(S.climb.to), padT + ih); ctx.stroke(); ctx.setLineDash([]);
+  }
+  var cq = landscapeQ(S.arch.mobius_phi);
+  ctx.strokeStyle = '#ffd60a'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(X(S.arch.mobius_phi), padT); ctx.lineTo(X(S.arch.mobius_phi), padT + ih); ctx.stroke();
+  ctx.beginPath(); ctx.arc(X(S.arch.mobius_phi), Y(cq), 6, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffd60a'; ctx.fill();
+  ctx.fillStyle = darkMode ? '#666a85' : '#969ab2'; ctx.font = '10px monospace';
+  ctx.fillText('φ 0', padL, H - 4);
+  ctx.fillText('φ 1.0', W - padR - 28, H - 4);
+}
+
+/* ── Panel renderers ───────────────────────────────────────── */
+function renderPanels(data){
+  var ph = photonicOf(data);
+  /* training metrics */
+  $("tmLoss").textContent = (data.loss * 10).toFixed(3);
+  $("tmGrad").textContent = data.gradNorms[0].toFixed(3);
+  $("tmLr").textContent = (S.arch.alpha * 9.72e-3).toExponential(2);
+  $("tmFrac").textContent = (3 + data.coherence).toFixed(2);
+  $("tmPhi").textContent = (data.mobiusPhi / Math.PI).toFixed(3) + 'π';
+  var sync = $("tmSync");
+  sync.textContent = data.locked ? 'LOCKED' : 'DRIFT';
+  sync.style.color = data.locked ? '#00ff88' : '#f72585';
+  $("sparkLoss").innerHTML = sparklineSVG(S.history.loss, '#f72585', 50, 220);
+  /* telemetry */
+  $("telRes").textContent = (data.coherence * 100).toFixed(1) + '%';
+  $("telQ").textContent = fmtQ(ph.qFactor);
+  $("telThermal").textContent = (0.3 + data.loss).toFixed(3);
+  $("sparkCoh").innerHTML = sparklineSVG(S.history.coherence, '#00f5d4', 32, 212);
+  /* parameters */
+  $("valK").textContent = sim.getCoupling().toFixed(3);
+  $("valPhi").textContent = (data.mobiusPhi / Math.PI).toFixed(3) + 'π';
+  if (document.activeElement !== $("rngPhi")) $("rngPhi").value = (data.mobiusPhi / Math.PI).toFixed(2);
+  var va = $("valAlpha");
+  va.textContent = S.arch.alpha.toFixed(3) + (S.arch.alpha < 0.1 ? ' — SHUNTED' : '');
+  va.style.color = S.arch.alpha < 0.1 ? '#ff4444' : '';
+  /* gauges */
+  $("gauges").innerHTML =
+    '<div class="gauge">' + gaugeSVG(data.coherence * 100, 0, 100, '#00f5d4', 84) + '<div class="lab">RESONANCE</div></div>' +
+    '<div class="gauge">' + gaugeSVG(data.coherence * 100, 0, 100, '#f72585', 84) + '<div class="lab">COHERENCE</div></div>' +
+    '<div class="gauge">' + gaugeSVG(0.3 + data.loss * 10, 0, 1, '#ffd60a', 84) + '<div class="lab">THERMAL</div></div>' +
+    '<div class="gauge">' + gaugeSVG(ph.qFactor / 1e7, 0, 12, '#7b2fff', 84) + '<div class="lab">Q-FACTOR ×10⁷</div></div>';
+  /* ganglion */
+  var g = $("ganglion");
+  if (!g.children.length){
+    data.gradNorms.forEach(function(_, i){
+      var cell = document.createElement('div'); cell.className = 'cell';
+      cell.innerHTML = '<div class="fill"></div><div class="h">H' + (i + 1) + '</div>';
+      g.appendChild(cell);
+    });
+  }
+  data.gradNorms.forEach(function(v, i){
+    var fill = g.children[i].querySelector('.fill');
+    fill.style.height = clamp(v * 50, 5, 100) + '%';
+    fill.style.background = 'hsla(' + (180 + i * 30) + ', 80%, 50%, 0.6)';
+  });
+  /* topo status row */
+  $("stStep").textContent = data.tick;
+  $("stPhi").textContent = S.arch.mobius_phi.toFixed(4);
+  $("stQ").textContent = fmtQ(ph.qFactor);
+  $("stMem").textContent = memoryBank.states.length + ' / ' + memoryBank.maxEntries;
+  $("stPeaks").textContent = memoryBank.states.filter(function(s){ return s.isPeak; }).length;
+  $("footLeft").textContent = 'STEP: ' + String(data.tick).padStart(6, '0') + ' | φ = ' + PHI.toFixed(6) + ' | 3-6-9 TOPOLOGY';
+  renderMemory();
+}
+function renderMemory(){
+  var best = memoryBank.getBestState();
+  var sorted = memoryBank.states.slice().sort(function(a,b){ return b.q - a.q; }).slice(0, 10);
+  $("memCount").textContent = memoryBank.states.length + ' / ' + memoryBank.maxEntries + ' · ' +
+    memoryBank.states.filter(function(s){ return s.isPeak; }).length + ' peaks';
+  var ul = $("memoryList");
+  if (!sorted.length) return;
+  ul.innerHTML = '';
+  sorted.forEach(function(s){
+    var li = document.createElement('li');
+    if (s.isPeak) li.className = 'peak';
+    if (best && s === best) li.className += ' best';
+    li.innerHTML = '<span class="dot"></span><div class="grow"><b>φ ' + s.phi.toFixed(4) + (s.isPeak ? ' · summit' : '') + (best && s === best ? ' · best' : '') +
+      '</b><span>banked step ' + s.step + '</span></div><span class="q">' + fmtQ(s.q) + '</span>';
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.textContent = 'CLIMB';
+    btn.addEventListener('click', function(){
+      if (S.climb || !S.data) return;
+      startClimb(S.arch.mobius_phi, s.phi, s.q / 1e8, S.data.tick);
+      var d = { diag:'manual_ascent', conf:1, action:'ascent', param:'mobius_phi', cur:S.arch.mobius_phi, nxt:s.phi,
+        gradient: s.phi - S.arch.mobius_phi, peakHeight: s.q / 1e8,
+        rationale: 'Manual climb ordered from the memory bank to the banked state at φ=' + s.phi.toFixed(4) + ' (Q=' + s.q.toExponential(2) + ').' };
+      S.lastDecision = d; renderDecision();
+      addLog('ascent', 'manual_ascent', S.data.tick, d.rationale);
+    });
+    li.appendChild(btn);
+    ul.appendChild(li);
+  });
+}
+function renderDecision(){
+  var d = S.lastDecision; if (!d) return;
+  var badgeClass = d.action === 'ascent' ? 'ascent' : (d.action === 'shunt' ? 'shunt' : 'recall');
+  var move = (d.param === 'mobius_phi')
+    ? '<div class="move">φ ' + d.cur.toFixed(4) + ' → ' + d.nxt.toFixed(4) + ' · gradient ' + (d.gradient != null ? d.gradient : (d.nxt - d.cur)).toFixed(4) + '</div>'
+    : '<div class="move">α ' + d.cur.toFixed(3) + ' → ' + d.nxt.toFixed(3) + ' · held 25 steps</div>';
+  $("decisionBody").innerHTML =
+    '<div class="diag"><span class="badge ' + badgeClass + '">' + esc(d.action.toUpperCase()) + '</span><span>' + esc(d.diag) + '</span></div>' +
+    '<p>' + esc(d.rationale) + '</p>' + move +
+    '<div class="conf"><span>CONFIDENCE ' + d.conf.toFixed(2) + '</span><span class="bar"><i style="width:' + Math.round(d.conf * 100) + '%"></i></span></div>';
+  if (d.action === 'ascent'){
+    $("ascentSlot").innerHTML =
+      '<div class="ascent-box"><div class="row"><span>🏔️ TOPOGRAPHIC ASCENT</span><span>→ φ ' + d.nxt.toFixed(4) + '</span></div>' +
+      '<div class="bar"><i id="ascentBar" style="width:2%"></i></div>' +
+      '<div class="nums"><span>Current Q: ' + (S.arch.mobius_phi * 100).toFixed(1) + '% of φ-range</span><span>Target Peak: ' + (d.peakHeight * 100).toFixed(1) + '%</span></div></div>';
+  } else {
+    $("ascentSlot").innerHTML = '';
+  }
+}
+function renderProposals(){
+  var box = $("proposals");
+  if (!S.proposals.length){ box.innerHTML = '<div class="none-note">No pending proposals</div>'; return; }
+  box.innerHTML = '';
+  S.proposals.forEach(function(p){
+    var div = document.createElement('div'); div.className = 'prop';
+    div.innerHTML = '<div class="diag">' + esc(p.diagnosis) + '</div><div class="rat">' + esc(p.rationale) + '</div>' +
+      '<div class="foot"><div class="chg">' + esc(p.param) + ': ' + p.current_val.toFixed(3) + ' → ' + p.proposed_val.toFixed(3) + '</div></div>';
+    var foot = div.querySelector('.foot');
+    var btns = document.createElement('div'); btns.style.display = 'flex'; btns.style.gap = '8px';
+    var ok = document.createElement('button'); ok.className = 'mini-btn ok'; ok.textContent = '✓'; ok.type = 'button';
+    ok.addEventListener('click', function(){ handleApprove(p); });
+    var no = document.createElement('button'); no.className = 'mini-btn no'; no.textContent = '✗'; no.type = 'button';
+    no.addEventListener('click', function(){ handleReject(p); });
+    btns.appendChild(ok); btns.appendChild(no); foot.appendChild(btns);
+    box.appendChild(div);
+  });
+}
+function renderBle(){
+  var box = $("bleList"); box.innerHTML = '';
+  BLE_DEVICES.forEach(function(dev){
+    var paired = !!S.blePaired[dev.id];
+    var div = document.createElement('div'); div.className = 'ble-dev';
+    div.style.borderLeft = '2px solid ' + dev.color + '44';
+    div.innerHTML = '<div><div class="n" style="color:' + dev.color + '">' + dev.name + '</div><div class="t">' + dev.type + ' · node ' + dev.node + '</div></div>' +
+      '<div class="st' + (paired ? ' up' : '') + '">' + (paired ? '● PAIR' : '○ DISC') + '</div>';
+    box.appendChild(div);
+  });
+}
+function addLog(kind, title, step, text){
+  var ul = $("logList"); if (!ul) return;
+  var li = document.createElement('li'); li.className = kind;
+  li.innerHTML = '<div class="meta"><b>' + esc(title) + '</b><span>step ' + step + '</span></div><p>' + esc(text) + '</p>';
+  ul.insertBefore(li, ul.firstChild);
+  while (ul.children.length > 9) ul.removeChild(ul.lastChild);
+}
+
+/* ── ASGA proposal handlers (from source, approve now steers φ) ── */
+function handleApprove(proposal){
+  S.proposals = S.proposals.filter(function(x){ return x.id !== proposal.id; });
+  var targetNorm = phiNorm(proposal.proposed_val * Math.PI);
+  if (S.data && !S.climb) startClimb(S.arch.mobius_phi, targetNorm, null, S.data.tick);
+  addLog('system', 'ASGA proposal approved', S.data ? S.data.tick : 0,
+    proposal.diagnosis + ': applying ' + proposal.param + ' → ' + proposal.proposed_val.toFixed(3) + 'π. The Möbius phase steers to φ=' + targetNorm.toFixed(4) + '.');
+  renderProposals();
+}
+function handleReject(proposal){
+  S.proposals = S.proposals.filter(function(x){ return x.id !== proposal.id; });
+  addLog('system', 'ASGA proposal rejected', S.data ? S.data.tick : 0, proposal.diagnosis + ' dismissed; current parameters held.');
+  renderProposals();
+}
+
+/* ── Climb control ─────────────────────────────────────────── */
+function startClimb(from, to, peakHeight, tick){
+  /* φ animates over ~11 ticks in the main loop; on arrival the sim's
+     Möbius phase override locks to the destination */
+  S.climb = { from: from, to: to, peakHeight: peakHeight, startTick: tick, durTicks: 11 };
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MAIN LOOP — the IOFResonance effect, one interval at 150 ms
+   ════════════════════════════════════════════════════════════════ */
+var peakTimer = 0;
+function tick(){
+  if (!S.running || S.emergencyStop) return;
+  var data = sim.step();
+  S.data = data;
+
+  /* topographic layer state, fed from the sim's real outputs */
+  if (data.tick > S.thermalUntil && S.thermalBoostOn){ sim.setErrorBoost(1); S.thermalBoostOn = false; }
+  NODE_IDS.forEach(function(id){
+    S.smPrev[id] = S.smErr[id];
+    S.smErr[id] = 0.72 * S.smErr[id] + 0.28 * (data.errors[id] * 6);
+    var n = S.nodes[id];
+    n.prevErr = n.localError;
+    n.localError = S.smErr[id];
+    n.amplitude = 0.5 + 0.5 * Math.sin(data.phases[id] || 0);
+  });
+  S.resHistory.push({ resonance: data.coherence });
+  if (S.resHistory.length > 40) S.resHistory.shift();
+
+  /* φ bookkeeping: follow the sim unless the reasoner is steering */
+  if (S.climb){
+    var p = Math.min(1, (data.tick - S.climb.startTick) / S.climb.durTicks);
+    var e = 1 - Math.pow(1 - p, 3);
+    S.arch.mobius_phi = S.climb.from + (S.climb.to - S.climb.from) * e;
+    if (p >= 1){
+      sim.setPhiOverride(S.climb.to * 2 * Math.PI);
+      addLog('ascent', 'ascent complete', data.tick,
+        'Reached φ=' + S.climb.to.toFixed(4) + '. Q is now ' + fmtQ(landscapeQ(S.climb.to)) + ' at the banked summit; the penteract twist now runs on the steered Möbius phase.');
+      S.climb = null;
+    }
+  } else if (!S.phiHeld){
+    S.arch.mobius_phi = phiNorm(data.mobiusPhi);
+  }
+  var ph = photonicOf(data);
+
+  /* history (from source) */
+  S.history.loss = S.history.loss.concat([data.loss]).slice(-64);
+  S.history.coherence = S.history.coherence.concat([data.coherence]).slice(-64);
+  NODE_IDS.forEach(function(id){
+    S.history.phases[id] = S.history.phases[id].concat([data.phases[id]]).slice(-32);
+  });
+
+  /* record converged states (from the pasted dashboard) */
+  if (data.locked && data.tick % 3 === 0){
+    memoryBank.record(S.arch, ph, data.tick, false);
+  }
+
+  /* terrain peaks → banked through record(), on the bank's terms */
+  if (data.tick - peakTimer >= 4){
+    peakTimer = data.tick;
+    S.peaks = detectPeaks();
+    $("stageCorner").textContent = 'PEAKS ' + S.peaks.length + ' · STEP ' + data.tick;
+    $("legPeaks").textContent = S.peaks.length;
+    S.peaks.forEach(function(pk){
+      var phi = clamp(pk.x, 0.01, 0.99);
+      memoryBank.record({ mobius_phi: phi },
+        { qFactor: landscapeQ(phi), resonance: landscapeQ(phi) / 1e8, coherence: data.coherence }, data.tick, true);
+    });
+  }
+
+  /* alpha recovery after a shunt hold */
+  if (S.arch.alpha < 0.1 && data.tick > S.alphaHoldUntil) S.arch.alpha = 0.1;
+
+  /* reasoning cycle */
+  if (S.reasoning && !S.climb && data.tick > S.cooldownUntil){
+    var d = reasonWithMemory(S.arch, ph, S.resHistory, data.tick, memoryBank, S.nodes);
+    if (d){
+      S.lastDecision = d;
+      S.cooldownUntil = data.tick + 14;
+      if (d.action === 'ascent'){
+        startClimb(d.cur, d.nxt, d.peakHeight, data.tick);
+        addLog('ascent', 'topological_ascent · conf ' + d.conf.toFixed(2), data.tick, d.rationale);
+      } else if (d.action === 'shunt'){
+        S.arch.alpha = d.nxt; S.alphaHoldUntil = data.tick + 25;
+        addLog('shunt', 'predictive_thermal_shunting · conf ' + d.conf.toFixed(2), data.tick, d.rationale);
+      } else {
+        startClimb(d.cur, d.nxt, null, data.tick);
+        addLog('recall', d.diag + ' · conf ' + d.conf.toFixed(2), data.tick, d.rationale);
+      }
+      renderDecision();
+    }
+  }
+
+  /* ASGA proposals (from source: every 200 ticks when coherence < 0.8) */
+  if (data.tick % 200 === 0 && data.coherence < 0.8){
+    S.proposals = S.proposals.concat([{
+      id: Date.now() + data.tick,
+      diagnosis: data.coherence < 0.7 ? 'COHERENCE_LOW' : 'PHI_DRIFT',
+      rationale: 'Coherence dropped to ' + (data.coherence * 100).toFixed(1) + '%. Recommend Möbius phase adjustment.',
+      param: 'mobius_phi',
+      current_val: data.mobiusPhi / Math.PI,
+      proposed_val: 1.740 + gauss(0, 0.05)
+    }]).slice(-3);
+    renderProposals();
+  }
+
+  renderPanels(data);
+  drawPenteract(data);
+  drawTerrain();
+  drawPhiChart();
+}
+
+/* ── Header / transport controls ───────────────────────────── */
+function setRunning(r){
+  S.running = r;
+  var b = $("btnRun");
+  b.textContent = r ? '■ PAUSE' : '▶ RUN';
+  b.className = 'abtn ' + (r ? 'pause' : 'run');
+}
+$("btnRun").addEventListener('click', function(){
+  if (S.emergencyStop){ S.emergencyStop = false; addLog('system', 'emergency stop cleared', S.data ? S.data.tick : 0, 'Operator cleared the stop; simulation resumed.'); }
+  setRunning(!S.running);
+});
+$("btnStop").addEventListener('click', function(){
+  S.emergencyStop = true; setRunning(false);
+  if (S.ws){ try { S.ws.close(); } catch (e) {} }
+  addLog('system', '🛑 emergency stop', S.data ? S.data.tick : 0, 'Emergency stop engaged — simulation halted and link closed. Press RUN to clear and resume.');
+});
+$("btnWs").addEventListener('click', function(){
+  /* connectWebSocket from source: ws://localhost:8765, simulation fallback */
+  try {
+    var ws = new WebSocket('ws://localhost:8765');
+    S.ws = ws;
+    ws.onopen = function(){ S.connected = true; var c = $("connStatus"); c.textContent = '● CONNECTED'; c.classList.add('up'); };
+    ws.onclose = function(){ S.connected = false; var c = $("connStatus"); c.textContent = '○ SIMULATION'; c.classList.remove('up'); };
+    ws.onerror = function(){ S.connected = false; var c = $("connStatus"); c.textContent = '○ SIMULATION'; c.classList.remove('up'); try { ws.close(); } catch (e) {} };
+  } catch (e) { /* WebSocket unavailable, using simulation */ }
+});
+function buildScaleBtns(){
+  var box = $("scaleBtns"); box.innerHTML = '';
+  Object.keys(SCALES).forEach(function(key){
+    var s = SCALES[key];
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'hbtn' + (S.scale.name === s.name ? ' on' : '');
+    b.textContent = s.icon + ' ' + s.name;
+    if (S.scale.name === s.name){ b.style.borderColor = s.color; b.style.color = s.color; b.style.background = s.color + '18'; }
+    b.addEventListener('click', function(){
+      S.scale = s;
+      $("brandSub").textContent = s.name + ' SCALE — 5D PENTERACT • 32V • 80E • φ=' + PHI.toFixed(4);
+      $("pentScaleName").textContent = s.name + ' SCALE — 5D PENTERACT';
+      buildScaleBtns();
+    });
+    box.appendChild(b);
+  });
+}
+
+/* ── Parameter + topographic controls ──────────────────────── */
+$("rngK").addEventListener('input', function(e){
+  var k = parseFloat(e.target.value);
+  sim.setCoupling(k);
+  $("valK").textContent = k.toFixed(3);
+});
+$("rngPhi").addEventListener('input', function(e){
+  var piVal = parseFloat(e.target.value);
+  var norm = phiNorm(piVal * Math.PI);
+  S.climb = null;
+  S.arch.mobius_phi = norm;
+  S.phiHeld = true;
+  sim.setPhiOverride(piVal * Math.PI);
+  $("valPhi").textContent = piVal.toFixed(3) + 'π';
+});
+$("rngPhi").addEventListener('change', function(){ S.phiHeld = false; });
+$("chkReason").addEventListener('change', function(e){
+  S.reasoning = e.target.checked;
+  addLog('system', S.reasoning ? 'reasoning enabled' : 'reasoning disabled', S.data ? S.data.tick : 0,
+    S.reasoning ? 'reasonWithMemory will act on ascent, shunt, and recall conditions again.' : 'The reasoner is off: φ moves only by slider, ASGA approval, or a memory-bank climb. The fabric keeps breathing underneath.');
+});
+$("btnDestab").addEventListener('click', function(){
+  sim.scatterPhases(1.6);
+  sim.setPhiOverride(null); S.phiHeld = false; S.climb = null;
+  S.arch.mobius_phi = 0.70; /* valley floor between the 0.42 and 0.87 summits, within climbing reach of the home-summit peaks */
+  sim.setPhiOverride(0.70 * 2 * Math.PI);
+  S.cooldownUntil = -1;
+  addLog('system', 'perturbation injected', S.data ? S.data.tick : 0,
+    'Jellyfish phases scattered and φ knocked to 0.7000, the valley floor between summits. Coherence will sag as the nodes re-sync — watch the reasoner pick a topographic ascent to the banked home-summit peaks, a harmonic lock, an ensemble recall, or a best-state recall.');
+});
+$("btnThermal").addEventListener('click', function(){
+  if (!S.data) return;
+  sim.setErrorBoost(4); S.thermalBoostOn = true; S.thermalUntil = S.data.tick + 30;
+  S.cooldownUntil = -1;
+  addLog('system', 'thermal spike injected', S.data.tick,
+    'Simulation error gain ×4 for 30 ticks. The predictive check projects the smoothed node errors 15 steps out — if any crosses |error| 0.80 while unlocked, α shunts to 0.01 before the wall is reached.');
+});
+$("btnBle").addEventListener('click', function(){
+  /* scanBluetooth from source, reporting through the in-page status line */
+  var msg = $("bleMsg");
+  if (!navigator.bluetooth){
+    msg.textContent = 'Bluetooth not available in this browser/context — the mesh stays in simulation. In a Chromium browser with Web Bluetooth, this button opens the device picker for the IOF service.';
+    return;
+  }
+  navigator.bluetooth.requestDevice({ filters: [{ services: ['0xIOF0'] }], optionalServices: ['battery_service'] })
+    .then(function(device){
+      var match = BLE_DEVICES.find(function(d){ return (device.name || '').indexOf(d.id) >= 0; }) || BLE_DEVICES[0];
+      S.blePaired[match.id] = true; renderBle();
+      msg.textContent = 'Paired ' + (device.name || match.name) + '.';
+    })
+    .catch(function(){ msg.textContent = 'Bluetooth not available or permission denied.'; });
+});
+
+/* ── Boot (the source's init effect + mount) ──────────────── */
+buildScaleBtns();
+renderBle();
+S.data = sim.step();
+S.arch.mobius_phi = phiNorm(S.data.mobiusPhi);
+renderPanels(S.data);
+drawPenteract(S.data);
+drawTerrain();
+drawPhiChart();
+addLog('system', 'initialised', 0, 'IOF Resonance running in simulation. Kuramoto sync spins up from scattered phases; locked steps will seed the TopologicalMemoryBank, and terrain peaks will be banked as summits through record().');
+setInterval(tick, 150);
+</script>
+</body>
+</html>
