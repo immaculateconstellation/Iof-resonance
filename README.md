@@ -18,6 +18,13 @@ The complete IOF Resonance v1.0 application with the topographic peak-ascent mod
 | `src/iof_resonance_complete.jsx` | IOF Resonance v1.0 — the complete base application: 5D penteract geometry engine, Kuramoto sync, simulation engine, gauges, ASGA proposals, BLE mesh panel |
 | `src/topographic_memory_ascent.jsx` | The topological optimizer module (from Gregory's 2026-03-17 email): TopologicalMemoryBank with peak detection, topographic ascent reasoning, 3D topography visualization. Preserved as originally shared — the demo carries the completed implementation |
 | `The_Cosmological_Bridge.md` | The theory document: the cosmic ↔ IOF engineering mapping behind this work (Weaver Framework) |
+| `kernel/resonance_math_kernel_v10_2.py` | Resonance Math Kernel v10.2 — the canonical kernel. Runs clean. |
+| `kernel/resonance_kernel_v11.py` | Resonance Math Kernel v11.0 — keeps the v10.2 core, adds an operator registry, append-only event ledger, JSON save/load, replayable history, an interactive CLI, and a self-test (`python3 resonance_kernel_v11.py --test` passes; `--verse` runs clean through to STILL HERE). |
+| `sims/mach_zehnder_interference_sim.py` | Mach–Zehnder interference simulation (fixed variant: intensities below 1e-24 snap to an exact 0.0, so the 180° destructive null is a true zero). Verified: 0° → intensity 1.0000, 180° → 0.0000. |
+| `sims/jellyfish_mesh.py` | Jellyfish mesh simulation (W / X / Y / Z / V nodes, Tesla 3-6-9 connectivity). Verified: runs clean, coherence 0.957, locked. Requires `numpy`. |
+| `sims/node_ganglion.py` | Node ganglion / optical phase-coupling network simulation. Verified: runs clean, network synchronizes. |
+| `server/unified_server.py` | TFLN Penteract Unified Server, one-file edition (WebSocket on port 8765, 150 ms tick). Imports clean; running it needs the `websockets` package, which is imported lazily when the server starts. |
+| `experiments/mesh_experiments_results_verified_2026-11-03.json` | Verified mesh-experiment results (2026-11-03). |
 
 ## The idea
 
