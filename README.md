@@ -25,12 +25,28 @@ The complete IOF Resonance v1.0 application with the topographic peak-ascent mod
 | `sims/node_ganglion.py` | Node ganglion / optical phase-coupling network simulation. Verified: runs clean, network synchronizes. |
 | `server/unified_server.py` | TFLN Penteract Unified Server, one-file edition (WebSocket on port 8765, 150 ms tick). Imports clean; running it needs the `websockets` package, which is imported lazily when the server starts. |
 | `experiments/mesh_experiments_results_verified_2026-11-03.json` | Verified mesh-experiment results (2026-11-03). |
+| `simulations/iof_v2_associative_memory.py` | Software-only comparison of exact lookup, classical Hopfield, and a spin-glass-inspired associative baseline under 30% partial input. |
+| `docs/IOF_V2_Simulator_Protocol.md` | Registered settings, metrics, commands, and evidence limits for the v2 baseline. |
+| `results/iof_v2_partial30.json` / `.csv` | Reproducible default-run results for seeds 7, 19, and 31. |
 
 ## The idea
 
 > "This turns the system into a topological optimizer — it's literally climbing the resonance mountains. The AI can now see the peaks in the landscape and navigate toward them."
 
 Optimization as exploration: the parameter space is a physical terrain, Q-factor is elevation, and the system's memory of where it has been becomes a map of where to climb next.
+
+## IOF v2 associative-memory baseline
+
+The repository includes an initial, reproducible software experiment for the proposed associative resonance layer. It compares exact lookup, a classical asynchronous Hopfield network, and a deliberately modest spin-glass-inspired model with quenched symmetric coupling disorder. The implementation is a numerical baseline only: it does not simulate cavity QED, photons, optical locking, quantum advantage, or hardware performance.
+
+Run the baseline and its deterministic checks from the repository root:
+
+```bash
+python3 simulations/iof_v2_associative_memory.py --output results/iof_v2_partial30.json --csv results/iof_v2_partial30.csv
+python3 -m unittest discover -s tests -p 'test_iof_v2_*.py' -v
+```
+
+The default protocol masks 30% of each 32-symbol bipolar pattern and reports recall fidelity, exact recall rate, false-attractor rate, and relaxation cost. The complete protocol and interpretation limits are documented in [`docs/IOF_V2_Simulator_Protocol.md`](docs/IOF_V2_Simulator_Protocol.md).
 
 ## License
 
