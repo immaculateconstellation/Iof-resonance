@@ -1,0 +1,84 @@
+{
+  "seed": 7,
+  "oscillators": [
+    {
+      "id": 0,
+      "node_type": "stabilizer",
+      "phase": -0.070467,
+      "frequency": 0.965085
+    },
+    {
+      "id": 1,
+      "node_type": "explorer",
+      "phase": 0.583973,
+      "frequency": 0.957244
+    },
+    {
+      "id": 2,
+      "node_type": "external",
+      "phase": 1.06155,
+      "frequency": 0.986569
+    },
+    {
+      "id": 3,
+      "node_type": "noop",
+      "phase": 1.393996,
+      "frequency": 1.000744
+    },
+    {
+      "id": 4,
+      "node_type": "stabilizer",
+      "phase": 1.909393,
+      "frequency": 0.993365
+    },
+    {
+      "id": 5,
+      "node_type": "explorer",
+      "phase": 2.445936,
+      "frequency": 0.959071
+    },
+    {
+      "id": 6,
+      "node_type": "external",
+      "phase": 3.1114,
+      "frequency": 1.032685
+    },
+    {
+      "id": 7,
+      "node_type": "noop",
+      "phase": 3.514712,
+      "frequency": 0.972324
+    },
+    {
+      "id": 8,
+      "node_type": "stabilizer",
+      "phase": 4.239763,
+      "frequency": 1.044771
+    },
+    {
+      "id": 9,
+      "node_type": "explorer",
+      "phase": 4.74323,
+      "frequency": 0.989668
+    },
+    {
+      "id": 10,
+      "node_type": "external",
+      "phase": 5.42649,
+      "frequency": 0.954658
+    },
+    {
+      "id": 11,
+      "node_type": "noop",
+      "phase": 5.902974,
+      "frequency": 0.978961
+    }
+  ],
+  "params": {
+    "coupling": 0.8,
+    "dt": 0.1,
+    "noise": 0.05,
+    "ticks": 100
+  },
+  "note": "Tick-0 state. Run generate_demo_run.py to regenerate this file and demo-run.json."
+}

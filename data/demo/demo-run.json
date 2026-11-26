@@ -1,0 +1,813 @@
+{
+  "seed": 7,
+  "ticks": [
+    {
+      "tick": 0,
+      "sync": 0.0705,
+      "entropy": 0.907,
+      "energy": 1.0855,
+      "score": -0.3128,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 1,
+      "sync": 0.0725,
+      "entropy": 0.907,
+      "energy": 1.0852,
+      "score": -0.3121,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 2,
+      "sync": 0.0743,
+      "entropy": 1.0,
+      "energy": 1.0849,
+      "score": -0.3106,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 3,
+      "sync": 0.0766,
+      "entropy": 1.0,
+      "energy": 1.0845,
+      "score": -0.3097,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 4,
+      "sync": 0.081,
+      "entropy": 0.9535,
+      "energy": 1.0837,
+      "score": -0.3085,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 5,
+      "sync": 0.0842,
+      "entropy": 0.9535,
+      "energy": 1.0832,
+      "score": -0.3072,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 6,
+      "sync": 0.0872,
+      "entropy": 0.907,
+      "energy": 1.0826,
+      "score": -0.3066,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 7,
+      "sync": 0.0896,
+      "entropy": 0.907,
+      "energy": 1.0822,
+      "score": -0.3057,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 8,
+      "sync": 0.0932,
+      "entropy": 1.0,
+      "energy": 1.0814,
+      "score": -0.3029,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 9,
+      "sync": 0.096,
+      "entropy": 0.9535,
+      "energy": 1.0808,
+      "score": -0.3023,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 10,
+      "sync": 0.0995,
+      "entropy": 0.9535,
+      "energy": 1.0801,
+      "score": -0.3008,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 11,
+      "sync": 0.1032,
+      "entropy": 0.8605,
+      "energy": 1.0793,
+      "score": -0.3007,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 12,
+      "sync": 0.1076,
+      "entropy": 0.907,
+      "energy": 1.0783,
+      "score": -0.2979,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 13,
+      "sync": 0.1129,
+      "entropy": 0.9535,
+      "energy": 1.077,
+      "score": -0.2946,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 14,
+      "sync": 0.1167,
+      "entropy": 0.907,
+      "energy": 1.0761,
+      "score": -0.2937,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 15,
+      "sync": 0.1234,
+      "entropy": 0.9535,
+      "energy": 1.0743,
+      "score": -0.2894,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 16,
+      "sync": 0.1269,
+      "entropy": 0.8605,
+      "energy": 1.0733,
+      "score": -0.2897,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 17,
+      "sync": 0.131,
+      "entropy": 0.907,
+      "energy": 1.0722,
+      "score": -0.2865,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 18,
+      "sync": 0.1381,
+      "entropy": 0.907,
+      "energy": 1.0701,
+      "score": -0.2828,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 19,
+      "sync": 0.1426,
+      "entropy": 0.8605,
+      "energy": 1.0687,
+      "score": -0.2816,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 20,
+      "sync": 0.1468,
+      "entropy": 0.9535,
+      "energy": 1.0674,
+      "score": -0.2767,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 21,
+      "sync": 0.151,
+      "entropy": 0.9535,
+      "energy": 1.066,
+      "score": -0.2742,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 22,
+      "sync": 0.1571,
+      "entropy": 0.907,
+      "energy": 1.064,
+      "score": -0.2721,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 23,
+      "sync": 0.1624,
+      "entropy": 0.907,
+      "energy": 1.0622,
+      "score": -0.2689,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 24,
+      "sync": 0.1695,
+      "entropy": 0.907,
+      "energy": 1.0596,
+      "score": -0.2646,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 25,
+      "sync": 0.176,
+      "entropy": 0.907,
+      "energy": 1.0571,
+      "score": -0.2605,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 26,
+      "sync": 0.1834,
+      "entropy": 0.9535,
+      "energy": 1.0542,
+      "score": -0.2538,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 27,
+      "sync": 0.1893,
+      "entropy": 0.907,
+      "energy": 1.0518,
+      "score": -0.2518,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 28,
+      "sync": 0.1951,
+      "entropy": 0.814,
+      "energy": 1.0494,
+      "score": -0.2522,
+      "mode": "Diffuse"
+    },
+    {
+      "tick": 29,
+      "sync": 0.2025,
+      "entropy": 0.8605,
+      "energy": 1.0462,
+      "score": -0.2451,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 30,
+      "sync": 0.2112,
+      "entropy": 0.907,
+      "energy": 1.0423,
+      "score": -0.2366,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 31,
+      "sync": 0.2203,
+      "entropy": 0.907,
+      "energy": 1.038,
+      "score": -0.23,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 32,
+      "sync": 0.2289,
+      "entropy": 0.907,
+      "energy": 1.0338,
+      "score": -0.2235,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 33,
+      "sync": 0.2378,
+      "entropy": 0.8605,
+      "energy": 1.0292,
+      "score": -0.2196,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 34,
+      "sync": 0.2478,
+      "entropy": 0.8605,
+      "energy": 1.0239,
+      "score": -0.2118,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 35,
+      "sync": 0.2571,
+      "entropy": 0.8605,
+      "energy": 1.0188,
+      "score": -0.2044,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 36,
+      "sync": 0.2663,
+      "entropy": 0.907,
+      "energy": 1.0135,
+      "score": -0.1934,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 37,
+      "sync": 0.2786,
+      "entropy": 0.8605,
+      "energy": 1.0063,
+      "score": -0.1866,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 38,
+      "sync": 0.2898,
+      "entropy": 0.814,
+      "energy": 0.9993,
+      "score": -0.1811,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 39,
+      "sync": 0.2991,
+      "entropy": 0.814,
+      "energy": 0.9933,
+      "score": -0.1731,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 40,
+      "sync": 0.3101,
+      "entropy": 0.8605,
+      "energy": 0.986,
+      "score": -0.1587,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 41,
+      "sync": 0.3229,
+      "entropy": 0.814,
+      "energy": 0.9772,
+      "score": -0.1518,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 42,
+      "sync": 0.3373,
+      "entropy": 0.8605,
+      "energy": 0.9668,
+      "score": -0.133,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 43,
+      "sync": 0.3507,
+      "entropy": 0.8605,
+      "energy": 0.9568,
+      "score": -0.1198,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 44,
+      "sync": 0.3637,
+      "entropy": 0.814,
+      "energy": 0.9466,
+      "score": -0.1126,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 45,
+      "sync": 0.3766,
+      "entropy": 0.7675,
+      "energy": 0.9362,
+      "score": -0.106,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 46,
+      "sync": 0.3896,
+      "entropy": 0.7675,
+      "energy": 0.9253,
+      "score": -0.0928,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 47,
+      "sync": 0.4026,
+      "entropy": 0.814,
+      "energy": 0.9141,
+      "score": -0.0722,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 48,
+      "sync": 0.415,
+      "entropy": 0.843,
+      "energy": 0.9031,
+      "score": -0.0541,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 49,
+      "sync": 0.4282,
+      "entropy": 0.814,
+      "energy": 0.8909,
+      "score": -0.044,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 50,
+      "sync": 0.4429,
+      "entropy": 0.7675,
+      "energy": 0.8769,
+      "score": -0.0357,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 51,
+      "sync": 0.4577,
+      "entropy": 0.7325,
+      "energy": 0.8623,
+      "score": -0.0257,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 52,
+      "sync": 0.4715,
+      "entropy": 0.7675,
+      "energy": 0.8484,
+      "score": -0.003,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 53,
+      "sync": 0.4863,
+      "entropy": 0.7035,
+      "energy": 0.833,
+      "score": 0.0007,
+      "mode": "Flowing"
+    },
+    {
+      "tick": 54,
+      "sync": 0.5002,
+      "entropy": 0.7035,
+      "energy": 0.818,
+      "score": 0.0169,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 55,
+      "sync": 0.516,
+      "entropy": 0.814,
+      "energy": 0.8005,
+      "score": 0.0617,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 56,
+      "sync": 0.5301,
+      "entropy": 0.7965,
+      "energy": 0.7844,
+      "score": 0.0758,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 57,
+      "sync": 0.5447,
+      "entropy": 0.686,
+      "energy": 0.7673,
+      "score": 0.0662,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 58,
+      "sync": 0.5592,
+      "entropy": 0.686,
+      "energy": 0.7497,
+      "score": 0.0844,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 59,
+      "sync": 0.5741,
+      "entropy": 0.7035,
+      "energy": 0.7314,
+      "score": 0.1084,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 60,
+      "sync": 0.5883,
+      "entropy": 0.6395,
+      "energy": 0.7134,
+      "score": 0.1075,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 61,
+      "sync": 0.6038,
+      "entropy": 0.6395,
+      "energy": 0.6932,
+      "score": 0.1274,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 62,
+      "sync": 0.6193,
+      "entropy": 0.657,
+      "energy": 0.6726,
+      "score": 0.1535,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 63,
+      "sync": 0.6365,
+      "entropy": 0.7325,
+      "energy": 0.649,
+      "score": 0.2025,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 64,
+      "sync": 0.6535,
+      "entropy": 0.657,
+      "energy": 0.6251,
+      "score": 0.2,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 65,
+      "sync": 0.6698,
+      "entropy": 0.6395,
+      "energy": 0.6015,
+      "score": 0.2162,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 66,
+      "sync": 0.6865,
+      "entropy": 0.5907,
+      "energy": 0.5767,
+      "score": 0.22,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 67,
+      "sync": 0.7037,
+      "entropy": 0.5465,
+      "energy": 0.5507,
+      "score": 0.2246,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 68,
+      "sync": 0.721,
+      "entropy": 0.5351,
+      "energy": 0.5238,
+      "score": 0.2431,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 69,
+      "sync": 0.7386,
+      "entropy": 0.5351,
+      "energy": 0.4958,
+      "score": 0.2674,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 70,
+      "sync": 0.7555,
+      "entropy": 0.5816,
+      "energy": 0.4682,
+      "score": 0.314,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 71,
+      "sync": 0.7737,
+      "entropy": 0.5266,
+      "energy": 0.4378,
+      "score": 0.3129,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 72,
+      "sync": 0.791,
+      "entropy": 0.5266,
+      "energy": 0.4084,
+      "score": 0.3379,
+      "mode": "Coherent"
+    },
+    {
+      "tick": 73,
+      "sync": 0.8068,
+      "entropy": 0.4977,
+      "energy": 0.3808,
+      "score": 0.3448,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 74,
+      "sync": 0.8233,
+      "entropy": 0.4535,
+      "energy": 0.3515,
+      "score": 0.3424,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 75,
+      "sync": 0.8379,
+      "entropy": 0.4327,
+      "energy": 0.325,
+      "score": 0.3501,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 76,
+      "sync": 0.8523,
+      "entropy": 0.4327,
+      "energy": 0.2985,
+      "score": 0.3705,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 77,
+      "sync": 0.8667,
+      "entropy": 0.5,
+      "energy": 0.2714,
+      "score": 0.4355,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 78,
+      "sync": 0.8807,
+      "entropy": 0.3862,
+      "energy": 0.2448,
+      "score": 0.3788,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 79,
+      "sync": 0.894,
+      "entropy": 0.4138,
+      "energy": 0.2191,
+      "score": 0.4178,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 80,
+      "sync": 0.9056,
+      "entropy": 0.3862,
+      "energy": 0.1962,
+      "score": 0.4142,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 81,
+      "sync": 0.9164,
+      "entropy": 0.3491,
+      "energy": 0.1749,
+      "score": 0.4006,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 82,
+      "sync": 0.9266,
+      "entropy": 0.3491,
+      "energy": 0.1543,
+      "score": 0.415,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 83,
+      "sync": 0.9351,
+      "entropy": 0.3862,
+      "energy": 0.137,
+      "score": 0.4572,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 84,
+      "sync": 0.9438,
+      "entropy": 0.4138,
+      "energy": 0.1191,
+      "score": 0.4921,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 85,
+      "sync": 0.951,
+      "entropy": 0.3491,
+      "energy": 0.1043,
+      "score": 0.4498,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 86,
+      "sync": 0.9574,
+      "entropy": 0.1813,
+      "energy": 0.0909,
+      "score": 0.2971,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 87,
+      "sync": 0.9637,
+      "entropy": 0.1813,
+      "energy": 0.0778,
+      "score": 0.3045,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 88,
+      "sync": 0.9687,
+      "entropy": 0.3862,
+      "energy": 0.0672,
+      "score": 0.5074,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 89,
+      "sync": 0.9726,
+      "entropy": 0.407,
+      "energy": 0.0591,
+      "score": 0.5308,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 90,
+      "sync": 0.9765,
+      "entropy": 0.1813,
+      "energy": 0.0507,
+      "score": 0.3197,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 91,
+      "sync": 0.9796,
+      "entropy": 0.1813,
+      "energy": 0.0441,
+      "score": 0.3234,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 92,
+      "sync": 0.9825,
+      "entropy": 0.1813,
+      "energy": 0.0379,
+      "score": 0.3269,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 93,
+      "sync": 0.9849,
+      "entropy": 0.2263,
+      "energy": 0.0326,
+      "score": 0.3797,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 94,
+      "sync": 0.9872,
+      "entropy": 0.1813,
+      "energy": 0.0278,
+      "score": 0.3325,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 95,
+      "sync": 0.9891,
+      "entropy": 0.1154,
+      "energy": 0.0237,
+      "score": 0.2515,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 96,
+      "sync": 0.9907,
+      "entropy": 0.1813,
+      "energy": 0.0201,
+      "score": 0.3368,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 97,
+      "sync": 0.9918,
+      "entropy": 0.1813,
+      "energy": 0.0179,
+      "score": 0.3381,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 98,
+      "sync": 0.9928,
+      "entropy": 0.1813,
+      "energy": 0.0156,
+      "score": 0.3393,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 99,
+      "sync": 0.9937,
+      "entropy": 0.2263,
+      "energy": 0.0136,
+      "score": 0.391,
+      "mode": "Immaculate"
+    },
+    {
+      "tick": 100,
+      "sync": 0.9946,
+      "entropy": 0.0,
+      "energy": 0.0118,
+      "score": -0.0035,
+      "mode": "Immaculate"
+    }
+  ]
+}
