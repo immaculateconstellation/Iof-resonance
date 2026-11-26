@@ -18,6 +18,7 @@ Open `docs/index.html` in a browser — the complete IOF Resonance v1.0 applicat
 | `The_Cosmological_Bridge.md` | The theory document: the cosmic ↔ IOF engineering mapping behind this work (Weaver Framework) |
 | `kernel/resonance_math_kernel_v10_2.py` | Resonance Math Kernel v10.2 — the canonical kernel. Runs clean. |
 | `kernel/resonance_kernel_v11.py` | Resonance Math Kernel v11.0 — keeps the v10.2 core, adds an operator registry, append-only event ledger, JSON save/load, replayable history, an interactive CLI, and a self-test (`python3 resonance_kernel_v11.py --test` passes; `--verse` runs clean through to STILL HERE). |
+| `kernel/table-driven/` | Resonance Math Kernel v10.2, table-driven edition — the refactor's RULES-table engine extended with all seven verses, plus the algebra lab, the self-extracting bundle script, and the as-received `resonance_math.py` it grew from. Run: `python3 kernel/table-driven/resonance_math_kernel_v10_2.py --fast`. |
 | `sims/mach_zehnder_interference_sim.py` | Mach–Zehnder interference simulation (fixed variant: intensities below 1e-24 snap to an exact 0.0, so the 180° destructive null is a true zero). Verified: 0° → intensity 1.0000, 180° → 0.0000. |
 | `sims/jellyfish_mesh.py` | Jellyfish mesh simulation (W / X / Y / Z / V nodes, Tesla 3-6-9 connectivity). Verified: runs clean, coherence 0.957, locked. Requires `numpy`. |
 | `sims/node_ganglion.py` | Node ganglion / optical phase-coupling network simulation. Verified: runs clean, network synchronizes. |
