@@ -25,6 +25,7 @@ Open `docs/index.html` in a browser — the complete IOF Resonance v1.0 applicat
 | `experiments/mesh_experiments_results_verified_2026-11-03.json` | Verified mesh-experiment results (2026-11-03). |
 | `simulations/iof_v2_associative_memory.py` | Software-only comparison of exact lookup, classical Hopfield, and a spin-glass-inspired associative baseline under 30% partial input. |
 | `docs/IOF_V2_Simulator_Protocol.md` | Registered settings, metrics, commands, and evidence limits for the v2 baseline. |
+| `docs/intelligent-oscillator-framework.md` | IOF — Intelligent Oscillator Framework: cross-platform phase-synchronization engine (12 oscillators, 4 node types, golden-ratio harmony metric); runs Android, iOS, PC, no cloud. |
 | `results/iof_v2_partial30.json` / `.csv` | Reproducible default-run results for seeds 7, 19, and 31. |
 
 ## The idea
