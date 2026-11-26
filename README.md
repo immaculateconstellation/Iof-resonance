@@ -53,7 +53,7 @@ The default protocol masks 30% of each 32-symbol bipolar pattern and reports rec
 - [AHR-Endpoint](https://github.com/immaculateconstellation/ahr-endpoint-p) — Adaptive Hollow Reflector, an experimental Rust endpoint-security agent.
 - [Magnetic Well](https://github.com/immaculateconstellation/magnetic-well) — a neodymium magnet in a cast-iron yoke, with simulation and a nanoscale assessment.
 - [Grandpa's Badge and the Magnetic Well](https://github.com/immaculateconstellation/grandpas-badge-and-the-magnetic-well) — a children's picture book about the light that holds us.
-- [Self-Dissolving Magnetic Microswimmers](https://github.com/immaculateconstellation/self-disolving-magnetic-swimmers) — a concept note for plaque-breaking microrobots that dissolve into usable iron.
+- Self-dissolving magnetic microswimmers — a planned/non-public concept note for plaque-breaking microrobots that dissolve into usable iron.
 
 ## License
 
