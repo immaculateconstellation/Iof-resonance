@@ -6,15 +6,13 @@ The IOF Resonance dashboard: a 5D penteract photonic-computing simulation with K
 
 ## Live demo
 
-**https://immaculate1022.github.io/IOF-Resonance/**
-
-The complete IOF Resonance v1.0 application with the topographic peak-ascent module integrated and running on the simulation's real outputs: memory recording converged states, topographic ascent, predictive thermal shunting, and memory recall (harmonic locking, ensemble recall, best-state recall with staleness-decayed confidence).
+Open `docs/index.html` in a browser — the complete IOF Resonance v1.0 application runs from that single file, with the topographic peak-ascent module integrated and running on the simulation's real outputs: memory recording converged states, topographic ascent, predictive thermal shunting, and memory recall (harmonic locking, ensemble recall, best-state recall with staleness-decayed confidence).
 
 ## Contents
 
 | File | What it is |
 |---|---|
-| `docs/index.html` | The runnable integrated demo (also served via GitHub Pages above) |
+| `docs/index.html` | The runnable integrated demo — open it in a browser |
 | `src/iof_resonance_complete.jsx` | IOF Resonance v1.0 — the complete base application: 5D penteract geometry engine, Kuramoto sync, simulation engine, gauges, ASGA proposals, BLE mesh panel |
 | `src/topographic_memory_ascent.jsx` | The topological optimizer module (from Gregory's 2026-03-17 email): TopologicalMemoryBank with peak detection, topographic ascent reasoning, 3D topography visualization. Preserved as originally shared — the demo carries the completed implementation |
 | `The_Cosmological_Bridge.md` | The theory document: the cosmic ↔ IOF engineering mapping behind this work (Weaver Framework) |
@@ -47,6 +45,13 @@ python3 -m unittest discover -s tests -p 'test_iof_v2_*.py' -v
 ```
 
 The default protocol masks 30% of each 32-symbol bipolar pattern and reports recall fidelity, exact recall rate, false-attractor rate, and relaxation cost. The complete protocol and interpretation limits are documented in [`docs/IOF_V2_Simulator_Protocol.md`](docs/IOF_V2_Simulator_Protocol.md).
+
+## Related
+
+- [AHR-Endpoint](https://github.com/immaculateconstellation/ahr-endpoint-p) — Adaptive Hollow Reflector, an experimental Rust endpoint-security agent.
+- [Magnetic Well](https://github.com/immaculateconstellation/magnetic-well) — a neodymium magnet in a cast-iron yoke, with simulation and a nanoscale assessment.
+- [Grandpa's Badge and the Magnetic Well](https://github.com/immaculateconstellation/grandpas-badge-and-the-magnetic-well) — a children's picture book about the light that holds us.
+- [Self-Dissolving Magnetic Microswimmers](https://github.com/immaculateconstellation/self-disolving-magnetic-swimmers) — a concept note for plaque-breaking microrobots that dissolve into usable iron.
 
 ## License
 
